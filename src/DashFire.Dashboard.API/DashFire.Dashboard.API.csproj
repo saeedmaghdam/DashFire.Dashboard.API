@@ -23,11 +23,18 @@
     <None Remove="Apis\" />
     <None Remove="Apis\V1\" />
     <None Remove="Apis\V1\Controllers\" />
+    <None Remove="Workers\" />
+    <None Remove="Workers\Subscribers\" />
+    <None Remove="RabbitMQ.Client" />
+    <None Remove="Workers\Subscribers\Models\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apis\" />
     <Folder Include="Apis\V1\" />
     <Folder Include="Apis\V1\Controllers\" />
+    <Folder Include="Workers\" />
+    <Folder Include="Workers\Subscribers\" />
+    <Folder Include="Workers\Subscribers\Models\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
@@ -35,5 +42,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.1.4" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DashFire.Dashboard.Framework\DashFire.Dashboard.Framework.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
 </Project>
