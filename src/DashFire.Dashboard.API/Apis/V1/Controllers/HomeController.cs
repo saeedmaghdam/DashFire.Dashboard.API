@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using DashFire.Dashboard.Framework.Services.Job;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DashFire.Dashboard.API.Apis.V1.Controllers
 {
@@ -7,8 +10,12 @@ namespace DashFire.Dashboard.API.Apis.V1.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     public class HomeController : Controller
     {
+        public HomeController()
+        {
+        }
+
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
             return Ok("Done!");
         }

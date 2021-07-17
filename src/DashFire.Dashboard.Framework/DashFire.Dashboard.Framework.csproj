@@ -7,9 +7,18 @@
   <ItemGroup>
     <None Remove="Options\" />
     <None Remove="Constants\" />
+    <None Remove="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <None Remove="Domain\" />
+    <None Remove="Services\" />
+    <None Remove="Services\Job\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Options\" />
     <Folder Include="Constants\" />
+    <Folder Include="Services\" />
+    <Folder Include="Services\Job\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
   </ItemGroup>
 </Project>

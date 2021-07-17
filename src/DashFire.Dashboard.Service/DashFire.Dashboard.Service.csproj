@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Job\" />
+    <None Remove="Job\Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Job\" />
+    <Folder Include="Job\Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DashFire.Dashboard.Framework\DashFire.Dashboard.Framework.csproj" />
+    <ProjectReference Include="..\DashFire.Dashboard.Domain\DashFire.Dashboard.Domain.csproj" />
+  </ItemGroup>
+</Project>

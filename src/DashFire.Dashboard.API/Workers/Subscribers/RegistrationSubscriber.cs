@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using DashFire.Dashboard.Framework.Constants;
 using DashFire.Dashboard.Framework.Options;
+using DashFire.Dashboard.Framework.Services.Job;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -16,6 +18,7 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
     public class RegistrationSubscriber : IHostedService
     {
         private readonly IOptions<ApplicationOptions> _options;
+        private readonly IServiceProvider _serviceProvider;
 
         private const string _serviceSideQueueName = "DashFire.Dashboard";
 
@@ -24,9 +27,10 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
         private readonly IConnection _connection;
         private readonly IModel _channel;
 
-        public RegistrationSubscriber(IOptions<ApplicationOptions> options)
+        public RegistrationSubscriber(IOptions<ApplicationOptions> options, IServiceProvider serviceProvider)
         {
             _options = options;
+            _serviceProvider = serviceProvider;
 
             var factory = new ConnectionFactory() { Uri = new Uri(_options.Value.RabbitMqOptions.ConnectionString) };
             _connection = factory.CreateConnection();
@@ -62,6 +66,13 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
 
         private void ProcessMessage(Models.RegistrationModel model)
         {
+            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
+                jobService.UpsertAsync(model.Key, model.InstanceId, JsonSerializer.Serialize(model.Parameters), cancellationTokenSource.Token).GetAwaiter().GetResult();
+            }
+
             var headers = new Dictionary<string, object>()
             {
                 {
