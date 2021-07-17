@@ -14,6 +14,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A2CD618E-F57
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashFire.Dashboard.Framework", "src\DashFire.Dashboard.Framework\DashFire.Dashboard.Framework.csproj", "{8CB3ECA3-3965-4389-B4CB-4288EFE2DDEC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashFire.Dashboard.Service", "src\DashFire.Dashboard.Service\DashFire.Dashboard.Service.csproj", "{524FC4A3-7DEA-424A-9507-27BBE4E72261}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashFire.Dashboard.Domain", "src\DashFire.Dashboard.Domain\DashFire.Dashboard.Domain.csproj", "{2B1548FE-2D24-4EE7-8EEC-9A2D70B8306D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +32,14 @@ Global
 		{8CB3ECA3-3965-4389-B4CB-4288EFE2DDEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CB3ECA3-3965-4389-B4CB-4288EFE2DDEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CB3ECA3-3965-4389-B4CB-4288EFE2DDEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{524FC4A3-7DEA-424A-9507-27BBE4E72261}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{524FC4A3-7DEA-424A-9507-27BBE4E72261}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{524FC4A3-7DEA-424A-9507-27BBE4E72261}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{524FC4A3-7DEA-424A-9507-27BBE4E72261}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B1548FE-2D24-4EE7-8EEC-9A2D70B8306D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B1548FE-2D24-4EE7-8EEC-9A2D70B8306D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B1548FE-2D24-4EE7-8EEC-9A2D70B8306D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B1548FE-2D24-4EE7-8EEC-9A2D70B8306D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -38,5 +50,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{117D723D-7FCC-42AB-8C55-F58C48F21BDC} = {A2CD618E-F573-4B6F-8C2B-79E9665801B2}
 		{8CB3ECA3-3965-4389-B4CB-4288EFE2DDEC} = {A2CD618E-F573-4B6F-8C2B-79E9665801B2}
+		{524FC4A3-7DEA-424A-9507-27BBE4E72261} = {A2CD618E-F573-4B6F-8C2B-79E9665801B2}
+		{2B1548FE-2D24-4EE7-8EEC-9A2D70B8306D} = {A2CD618E-F573-4B6F-8C2B-79E9665801B2}
 	EndGlobalSection
 EndGlobal

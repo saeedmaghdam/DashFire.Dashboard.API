@@ -1,7 +1,10 @@
 ﻿using DashFire.Dashboard.Framework.Options;
+using DashFire.Dashboard.Framework.Services.Job;
+using DashFire.Dashboard.Service.Job;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -44,6 +47,14 @@ namespace DashFire.Dashboard.API
 
             services.AddOptions();
             services.Configure<ApplicationOptions>(options => Configuration.GetSection("ApplicationOptions").Bind(options));
+
+            services.AddEntityFrameworkNpgsql().AddDbContext<Domain.AppDbContext>((sp, options) =>
+            {
+                options.UseNpgsql(Configuration.GetConnectionString("DashFireDatabase"));
+                options.UseInternalServiceProvider(sp);
+            }, ServiceLifetime.Scoped);
+
+            services.AddScoped<IJobService, JobService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

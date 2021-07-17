@@ -27,6 +27,7 @@
     <None Remove="Workers\Subscribers\" />
     <None Remove="RabbitMQ.Client" />
     <None Remove="Workers\Subscribers\Models\" />
+    <None Remove="Npgsql.EntityFrameworkCore.PostgreSQL" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apis\" />
@@ -43,9 +44,16 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
     <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DashFire.Dashboard.Framework\DashFire.Dashboard.Framework.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\DashFire.Dashboard.Domain\DashFire.Dashboard.Domain.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\DashFire.Dashboard.Service\DashFire.Dashboard.Service.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>
