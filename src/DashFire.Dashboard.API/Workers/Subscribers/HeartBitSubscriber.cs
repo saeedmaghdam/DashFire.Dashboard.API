@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace DashFire.Dashboard.API.Workers.Subscribers.Models
+namespace DashFire.Dashboard.API.Workers.Subscribers
 {
     public class HeartBitSubscriber : IHostedService
     {
@@ -66,6 +66,13 @@ namespace DashFire.Dashboard.API.Workers.Subscribers.Models
 
         private void ProcessMessage(Models.HeartBitModel model)
         {
+            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
+                jobService.PatchJobExecutionStatus(model.Key, model.InstanceId, cancellationTokenSource.Token).GetAwaiter().GetResult();
+            }
+
             var headers = new Dictionary<string, object>()
             {
                 {
