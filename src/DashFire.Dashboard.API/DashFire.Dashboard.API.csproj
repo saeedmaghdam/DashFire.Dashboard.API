@@ -33,9 +33,6 @@
     <Folder Include="Apis\" />
     <Folder Include="Apis\V1\" />
     <Folder Include="Apis\V1\Controllers\" />
-    <Folder Include="Workers\" />
-    <Folder Include="Workers\Subscribers\" />
-    <Folder Include="Workers\Subscribers\Models\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />

@@ -26,6 +26,19 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
                     "message_type", MessageTypes.Registration.ToString().ToLower()
                 }
             });
+
+            serviceSideQueueName = $"{_serviceSideQueueName}_{MessageTypes.HeartBit}";
+            channel.QueueDeclare(queue: serviceSideQueueName,
+                                     durable: true,
+                                     exclusive: false,
+                                     autoDelete: false,
+                                     arguments: null);
+            channel.QueueBind(serviceSideQueueName, _serviceSideExchangeName, string.Empty, new Dictionary<string, object>()
+            {
+                {
+                    "message_type", MessageTypes.HeartBit.ToString().ToLower()
+                }
+            });
         }
 
         internal static void DeclareExchangeAndQueue(IModel channel, string exchangeName, string jobKey, string jobInstanceId, IDictionary<string, object> headers)

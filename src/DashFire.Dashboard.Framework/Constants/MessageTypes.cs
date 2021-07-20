@@ -2,6 +2,7 @@
 {
     public enum MessageTypes
     {
-        Registration
+        Registration,
+        HeartBit
     }
 }

@@ -13,9 +13,9 @@ using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace DashFire.Dashboard.API.Workers.Subscribers
+namespace DashFire.Dashboard.API.Workers.Subscribers.Models
 {
-    public class RegistrationSubscriber : IHostedService
+    public class HeartBitSubscriber : IHostedService
     {
         private readonly IOptions<ApplicationOptions> _options;
         private readonly IServiceProvider _serviceProvider;
@@ -27,7 +27,7 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
         private readonly IConnection _connection;
         private readonly IModel _channel;
 
-        public RegistrationSubscriber(IOptions<ApplicationOptions> options, IServiceProvider serviceProvider)
+        public HeartBitSubscriber(IOptions<ApplicationOptions> options, IServiceProvider serviceProvider)
         {
             _options = options;
             _serviceProvider = serviceProvider;
@@ -44,7 +44,7 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += ConsumerReceived;
 
-            _channel.BasicConsume($"{_serviceSideQueueName}_{MessageTypes.Registration}", true, consumer);
+            _channel.BasicConsume($"{_serviceSideQueueName}_{MessageTypes.HeartBit}", true, consumer);
 
             return Task.CompletedTask;
         }
@@ -58,21 +58,14 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
         {
             var body = e.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
-            
-            var registrationModel = JsonSerializer.Deserialize<Models.RegistrationModel>(message);
+
+            var registrationModel = JsonSerializer.Deserialize<Models.HeartBitModel>(message);
 
             ProcessMessage(registrationModel);
         }
 
-        private void ProcessMessage(Models.RegistrationModel model)
+        private void ProcessMessage(Models.HeartBitModel model)
         {
-            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
-                jobService.UpsertAsync(model.Key, model.InstanceId, JsonSerializer.Serialize(model.Parameters), cancellationTokenSource.Token).GetAwaiter().GetResult();
-            }
-
             var headers = new Dictionary<string, object>()
             {
                 {
@@ -87,10 +80,10 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
 
             var properties = _channel.CreateBasicProperties();
             properties.Persistent = false;
-            headers.Add("message_type", MessageTypes.Registration.ToString().ToLower());
+            headers.Add("message_type", MessageTypes.HeartBit.ToString().ToLower());
             properties.Headers = headers;
 
-            var responseModel = new Models.RegistrationResponseModel();
+            var responseModel = new Models.HeartBitResponseModel();
             var messageBodyBytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(responseModel));
             _channel.BasicPublish(_dashboardSideExchangeName, "", properties, messageBodyBytes);
         }
