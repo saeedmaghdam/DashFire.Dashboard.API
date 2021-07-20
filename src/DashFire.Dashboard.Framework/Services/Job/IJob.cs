@@ -1,4 +1,5 @@
 ﻿using System;
+using DashFire.Dashboard.Framework.Constants;
 
 namespace DashFire.Dashboard.Framework.Services.Job
 {
@@ -41,6 +42,12 @@ namespace DashFire.Dashboard.Framework.Services.Job
         }
 
         string LastStatusMessage
+        {
+            get;
+            set;
+        }
+
+        JobStatus Status
         {
             get;
             set;

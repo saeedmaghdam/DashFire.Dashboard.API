@@ -3,6 +3,7 @@
     public enum MessageTypes
     {
         Registration,
-        HeartBit
+        HeartBit,
+        JobStatus
     }
 }

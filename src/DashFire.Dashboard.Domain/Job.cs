@@ -55,5 +55,12 @@ namespace DashFire.Dashboard.Domain
             get;
             set;
         }
+
+        [Column("status")]
+        public short Status
+        {
+            get;
+            set;
+        }
     }
 }
