@@ -59,9 +59,9 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
             var body = e.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
 
-            var registrationModel = JsonSerializer.Deserialize<Models.HeartBitModel>(message);
+            var heartBitModel = JsonSerializer.Deserialize<Models.HeartBitModel>(message);
 
-            ProcessMessage(registrationModel);
+            ProcessMessage(heartBitModel);
         }
 
         private void ProcessMessage(Models.HeartBitModel model)
@@ -70,7 +70,7 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
             using (var scope = _serviceProvider.CreateScope())
             {
                 var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
-                jobService.PatchJobExecutionStatus(model.Key, model.InstanceId, cancellationTokenSource.Token).GetAwaiter().GetResult();
+                jobService.PatchJobExecutionStatusAsync(model.Key, model.InstanceId, cancellationTokenSource.Token).GetAwaiter().GetResult();
             }
 
             var headers = new Dictionary<string, object>()

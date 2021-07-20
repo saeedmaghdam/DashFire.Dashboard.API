@@ -49,7 +49,7 @@ namespace DashFire.Dashboard.Service.Job
             return currentJob.Id;
         }
 
-        public async Task PatchJobExecutionStatus(string key, string instanceId, CancellationToken cancellationToken)
+        public async Task PatchJobExecutionStatusAsync(string key, string instanceId, CancellationToken cancellationToken)
         {
             if (key == null)
                 throw new Exception("Job's key is required.");
@@ -68,7 +68,7 @@ namespace DashFire.Dashboard.Service.Job
             await _db.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task PatchJobStatus(string key, string instanceId, JobStatus jobStatus, CancellationToken cancellationToken)
+        public async Task PatchJobStatusAsync(string key, string instanceId, JobStatus jobStatus, CancellationToken cancellationToken)
         {
             if (key == null)
                 throw new Exception("Job's key is required.");
