@@ -87,5 +87,25 @@ namespace DashFire.Dashboard.Service.Job
 
             await _db.SaveChangesAsync(cancellationToken);
         }
+
+        public async Task PatchJobStatusMessageAsync(string key, string instanceId, string jobStatusMessage, CancellationToken cancellationToken)
+        {
+            if (key == null)
+                throw new Exception("Job's key is required.");
+            if (instanceId == null)
+                throw new Exception("Job's instance id is required.");
+
+            var currentJob = _db.Jobs.Where(x => x.Key == key && x.InstanceId == instanceId).SingleOrDefault();
+            if (currentJob == null)
+                throw new Exception($"Job with key {key} and instance id {instanceId} not found.");
+
+            var now = DateTime.Now;
+            currentJob.LastExecutionDateTime = now;
+            currentJob.RecordUpdateDateTime = now;
+            currentJob.IsOnline = true;
+            currentJob.LastStatusMessage = jobStatusMessage;
+
+            await _db.SaveChangesAsync(cancellationToken);
+        }
     }
 }

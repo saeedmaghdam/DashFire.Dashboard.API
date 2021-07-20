@@ -21,6 +21,7 @@ namespace DashFire.Dashboard.API
                         services.AddHostedService<RegistrationSubscriber>();
                         services.AddHostedService<HeartBitSubscriber>();
                         services.AddHostedService<JobStatusSubscriber>();
+                        services.AddHostedService<LogJobStatusSubscriber>();
                     });
                     webBuilder.UseStartup<Startup>();
                 });

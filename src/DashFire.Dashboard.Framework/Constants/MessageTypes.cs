@@ -4,6 +4,7 @@
     {
         Registration,
         HeartBit,
-        JobStatus
+        JobStatus,
+        LogJobStatus
     }
 }

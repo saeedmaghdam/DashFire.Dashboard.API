@@ -11,5 +11,7 @@ namespace DashFire.Dashboard.Framework.Services.Job
         Task PatchJobExecutionStatus(string key, string instanceId, CancellationToken cancellationToken);
 
         Task PatchJobStatus(string key, string instanceId, JobStatus jobStatus, CancellationToken cancellationToken);
+
+        Task PatchJobStatusMessageAsync(string key, string instanceId, string jobStatusMessage, CancellationToken cancellationToken);
     }
 }
