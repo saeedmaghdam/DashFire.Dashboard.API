@@ -5,6 +5,7 @@
         Registration,
         HeartBit,
         JobStatus,
-        LogJobStatus
+        LogJobStatus,
+        JobSchedule
     }
 }
