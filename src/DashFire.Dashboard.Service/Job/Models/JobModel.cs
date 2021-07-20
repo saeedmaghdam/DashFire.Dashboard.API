@@ -1,9 +1,10 @@
 ﻿using System;
 using DashFire.Dashboard.Framework.Constants;
+using DashFire.Dashboard.Framework.Services.Job;
 
 namespace DashFire.Dashboard.Service.Job.Models
 {
-    public class JobModel : EntityRecord
+    public class JobModel : EntityRecord, IJob
     {
         public string Key
         {
@@ -41,7 +42,7 @@ namespace DashFire.Dashboard.Service.Job.Models
             set;
         }
 
-        public string LastStatus
+        public string LastStatusMessage
         {
             get;
             set;
