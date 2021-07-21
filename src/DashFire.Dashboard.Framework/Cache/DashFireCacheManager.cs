@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DashFire.Dashboard.Framework.Constants;
 using DashFire.Dashboard.Framework.SerializerOptions;
 using DashFire.Dashboard.Framework.Services.Job;
 using MessagePack;
@@ -98,6 +99,18 @@ namespace DashFire.Dashboard.Framework.Cache
                 return;
 
             jobDetails.LastStatusMessage = message;
+
+            var serializedJobDetails = MessagePackSerializer.Serialize<Models.JobDetailsCacheModel>(jobDetails, _options);
+            await _cache.SetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", serializedJobDetails, cancellationToken);
+        }
+
+        public async Task SetJobStatusAsync(string key, string instanceId, JobStatus jobStatus, CancellationToken cancellationToken)
+        {
+            var jobDetails = await GetJobDetailsAsync(key, instanceId, cancellationToken);
+            if (jobDetails == null)
+                return;
+
+            jobDetails.Status = jobStatus;
 
             var serializedJobDetails = MessagePackSerializer.Serialize<Models.JobDetailsCacheModel>(jobDetails, _options);
             await _cache.SetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", serializedJobDetails, cancellationToken);
