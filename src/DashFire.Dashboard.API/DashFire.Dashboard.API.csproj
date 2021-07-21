@@ -30,11 +30,15 @@
     <None Remove="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <None Remove="StackExchange.Redis" />
     <None Remove="Microsoft.Extensions.Caching.Redis" />
+    <None Remove="Apis\V1\Models\" />
+    <None Remove="Apis\V1\Models\Job\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apis\" />
     <Folder Include="Apis\V1\" />
     <Folder Include="Apis\V1\Controllers\" />
+    <Folder Include="Apis\V1\Models\" />
+    <Folder Include="Apis\V1\Models\Job\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
