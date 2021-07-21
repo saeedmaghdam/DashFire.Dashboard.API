@@ -111,6 +111,8 @@ namespace DashFire.Dashboard.Framework.Cache
                 return;
 
             jobDetails.Status = jobStatus;
+            if (jobStatus == JobStatus.Running)
+                jobDetails.LastExecutionDateTime = DateTime.Now;
 
             var serializedJobDetails = MessagePackSerializer.Serialize<Models.JobDetailsCacheModel>(jobDetails, _options);
             await _cache.SetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", serializedJobDetails, cancellationToken);

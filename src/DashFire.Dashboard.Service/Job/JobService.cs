@@ -76,7 +76,6 @@ namespace DashFire.Dashboard.Service.Job
                 throw new Exception($"Job with key {key} and instance id {instanceId} not found.");
 
             var now = DateTime.Now;
-            currentJob.LastExecutionDateTime = now;
             currentJob.RecordUpdateDateTime = now;
             currentJob.IsOnline = true;
 
@@ -97,7 +96,8 @@ namespace DashFire.Dashboard.Service.Job
                 throw new Exception($"Job with key {key} and instance id {instanceId} not found.");
 
             var now = DateTime.Now;
-            currentJob.LastExecutionDateTime = now;
+            if (jobStatus == JobStatus.Running)
+                currentJob.LastExecutionDateTime = now;
             currentJob.RecordUpdateDateTime = now;
             currentJob.IsOnline = true;
             currentJob.Status = (short)jobStatus;
@@ -119,7 +119,6 @@ namespace DashFire.Dashboard.Service.Job
                 throw new Exception($"Job with key {key} and instance id {instanceId} not found.");
 
             var now = DateTime.Now;
-            currentJob.LastExecutionDateTime = now;
             currentJob.RecordUpdateDateTime = now;
             currentJob.IsOnline = true;
             currentJob.LastStatusMessage = jobStatusMessage;
@@ -141,7 +140,6 @@ namespace DashFire.Dashboard.Service.Job
                 throw new Exception($"Job with key {key} and instance id {instanceId} not found.");
 
             var now = DateTime.Now;
-            currentJob.LastExecutionDateTime = now;
             currentJob.RecordUpdateDateTime = now;
             currentJob.IsOnline = true;
             currentJob.NextExecutionDateTime = nextExecutionDateTime;
