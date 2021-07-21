@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using DashFire.Dashboard.Framework.Cache;
 using DashFire.Dashboard.Framework.Services.Job;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +23,7 @@ namespace DashFire.Dashboard.API.Apis.V1.Controllers
         {
             var jobs = await _jobService.GetCachedAsync(cancellationToken);
             if (!jobs.Any())
-                return Ok();
+                return NoContent();
 
             return Ok(jobs.Select(job => new Models.Job.IndexViewModel()
             {
@@ -39,7 +37,14 @@ namespace DashFire.Dashboard.API.Apis.V1.Controllers
                 SystemName = job.SystemName,
                 Description = job.Description,
                 DisplayName = job.DisplayName,
-                RegistrationRequired = job.RegistrationRequired
+                RegistrationRequired = job.RegistrationRequired,
+                Parameters = job.Parameters.Select(x=> new Models.Job.JobParameterViewModel()
+                {
+                    Description = x.Description,
+                    DisplayName = x.DisplayName,
+                    ParameterName = x.ParameterName,
+                    TypeFullName = x.TypeFullName
+                })
             }));
         }
     }

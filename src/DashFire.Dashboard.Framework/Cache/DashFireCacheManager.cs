@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using DashFire.Dashboard.Framework.Constants;
@@ -79,7 +80,7 @@ namespace DashFire.Dashboard.Framework.Cache
             return MessagePackSerializer.Deserialize<Models.JobDetailsCacheModel>(cacheResult, _options);
         }
 
-        public async Task SetJobAsync(string key, string instanceId, string systemName, string displayName, string description, bool registrationRequired, CancellationToken cancellationToken)
+        public async Task SetJobAsync(string key, string instanceId, string systemName, string displayName, string description, bool registrationRequired, string parameters, CancellationToken cancellationToken)
         {
             var cacheResult = await _cache.GetAsync(CacheKeyJob, cancellationToken);
             var jobs = default(IDictionary<string, Models.JobCacheModel>);
@@ -97,7 +98,8 @@ namespace DashFire.Dashboard.Framework.Cache
                     SystemName = systemName,
                     Description = description,
                     DisplayName = displayName,
-                    RegistrationRequired = registrationRequired
+                    RegistrationRequired = registrationRequired,
+                    Parameters = JsonSerializer.Deserialize<List<Models.JobParameterCacheModel>>(parameters)
                 });
 
                 var serializedJobs = MessagePackSerializer.Serialize<IDictionary<string, Models.JobCacheModel>>(jobs, _options);
@@ -171,7 +173,8 @@ namespace DashFire.Dashboard.Framework.Cache
                     SystemName = jobModel.SystemName,
                     Description = jobModel.Description,
                     DisplayName = jobModel.DisplayName,
-                    RegistrationRequired = jobModel.RegistrationRequired
+                    RegistrationRequired = jobModel.RegistrationRequired,
+                    Parameters = JsonSerializer.Deserialize<List<Models.JobParameterCacheModel>>(jobModel.Parameters)
                 });
 
 

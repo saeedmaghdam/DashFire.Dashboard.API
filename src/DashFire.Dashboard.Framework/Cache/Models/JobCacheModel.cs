@@ -1,4 +1,5 @@
-﻿using MessagePack;
+﻿using System.Collections.Generic;
+using MessagePack;
 
 namespace DashFire.Dashboard.Framework.Cache.Models
 {
@@ -42,6 +43,13 @@ namespace DashFire.Dashboard.Framework.Cache.Models
 
         [Key(5)]
         public bool RegistrationRequired
+        {
+            get;
+            set;
+        }
+
+        [Key(6)]
+        public List<JobParameterCacheModel> Parameters
         {
             get;
             set;

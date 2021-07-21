@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DashFire.Dashboard.Framework.Constants;
 
 namespace DashFire.Dashboard.API.Apis.V1.Models.Job
@@ -66,6 +67,12 @@ namespace DashFire.Dashboard.API.Apis.V1.Models.Job
         }
 
         public bool RegistrationRequired
+        {
+            get;
+            set;
+        }
+
+        public IEnumerable<JobParameterViewModel> Parameters
         {
             get;
             set;

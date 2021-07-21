@@ -49,7 +49,18 @@ namespace DashFire.Dashboard.Service.Job
                     IsOnline = jobDetails.IsOnline,
                     Key = job.Key,
                     LastExecutionDateTime = jobDetails.LastExecutionDateTime,
-                    NextExecutionDateTime = jobDetails.NextExecutionDateTime
+                    NextExecutionDateTime = jobDetails.NextExecutionDateTime,
+                    SystemName = job.SystemName,
+                    Description = job.Description,
+                    DisplayName = job.DisplayName,
+                    RegistrationRequired = job.RegistrationRequired,
+                    Parameters = job.Parameters.Select(x=> new Models.JobParameterModel()
+                    {
+                        Description = x.Description,
+                        DisplayName = x.DisplayName,
+                        ParameterName = x.ParameterName,
+                        TypeFullName = x.TypeFullName
+                    })
                 });
             }
 
@@ -89,7 +100,7 @@ namespace DashFire.Dashboard.Service.Job
                 return job.Id;
             }
 
-            await _cacheManager.SetJobAsync(key, instanceId, systemName, displayName, description, registrationRequired, cancellationToken);
+            await _cacheManager.SetJobAsync(key, instanceId, systemName, displayName, description, registrationRequired, parameters, cancellationToken);
 
             return currentJob.Id;
         }
@@ -111,7 +122,7 @@ namespace DashFire.Dashboard.Service.Job
 
             await _db.SaveChangesAsync(cancellationToken);
 
-            await _cacheManager.SetJobAsync(key, instanceId, currentJob.SystemName, currentJob.DisplayName, currentJob.Description, currentJob.RegistrationRequired, cancellationToken);
+            await _cacheManager.SetJobAsync(key, instanceId, currentJob.SystemName, currentJob.DisplayName, currentJob.Description, currentJob.RegistrationRequired, currentJob.Parameters, cancellationToken);
         }
 
         public async Task PatchJobStatusAsync(string key, string instanceId, JobStatus jobStatus, CancellationToken cancellationToken)
