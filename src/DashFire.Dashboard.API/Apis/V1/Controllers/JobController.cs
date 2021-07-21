@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DashFire.Dashboard.Framework.Cache;
+using DashFire.Dashboard.Framework.Services.Job;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DashFire.Dashboard.API.Apis.V1.Controllers
@@ -11,21 +13,29 @@ namespace DashFire.Dashboard.API.Apis.V1.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     public class JobController : Controller
     {
-        private readonly DashFireCacheManager _cacheManager;
+        private readonly IJobService _jobService;
 
-        public JobController(DashFireCacheManager cacheManager)
+        public JobController(IJobService jobService)
         {
-            _cacheManager = cacheManager;
+            _jobService = jobService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        public async Task<ActionResult<Models.Job.IndexViewModel>> Index(CancellationToken cancellationToken)
         {
-            var jobs = await _cacheManager.GetJobsAsync(cancellationToken);
-            return Ok(jobs.Select(x=> new Models.Job.IndexViewModel()
+            var jobs = await _jobService.GetCachedAsync(cancellationToken);
+            if (!jobs.Any())
+                return Ok();
+
+            return Ok(jobs.Select(job => new Models.Job.IndexViewModel()
             {
-                Key = x.Key,
-                InstanceId = x.InstanceId
+                Key = job.Key,
+                InstanceId = job.InstanceId,
+                Status = job.Status,
+                IsOnline = job.IsOnline,
+                LastStatusMessage = job.LastStatusMessage,
+                LastExecutionDateTime = job.LastExecutionDateTime,
+                NextExecutionDateTime = job.NextExecutionDateTime
             }));
         }
     }

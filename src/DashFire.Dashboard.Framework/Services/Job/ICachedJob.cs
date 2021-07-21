@@ -1,47 +1,47 @@
 ﻿using System;
 using DashFire.Dashboard.Framework.Constants;
 
-namespace DashFire.Dashboard.API.Apis.V1.Models.Job
+namespace DashFire.Dashboard.Framework.Services.Job
 {
-    public class IndexViewModel
+    public interface ICachedJob
     {
-        public string Key
+        string Key
         {
             get;
             set;
         }
 
-        public string InstanceId
+        string InstanceId
         {
             get;
             set;
         }
 
-        public bool IsOnline
+        bool IsOnline
         {
             get;
             set;
         }
 
-        public DateTime LastExecutionDateTime
+        DateTime LastExecutionDateTime
         {
             get;
             set;
         }
 
-        public DateTime NextExecutionDateTime
+        DateTime NextExecutionDateTime
         {
             get;
             set;
         }
 
-        public string LastStatusMessage
+        string LastStatusMessage
         {
             get;
             set;
         }
 
-        public JobStatus Status
+        JobStatus Status
         {
             get;
             set;

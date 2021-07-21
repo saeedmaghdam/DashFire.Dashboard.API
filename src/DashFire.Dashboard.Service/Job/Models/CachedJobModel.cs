@@ -1,9 +1,10 @@
 ﻿using System;
 using DashFire.Dashboard.Framework.Constants;
+using DashFire.Dashboard.Framework.Services.Job;
 
-namespace DashFire.Dashboard.API.Apis.V1.Models.Job
+namespace DashFire.Dashboard.Service.Job.Models
 {
-    public class IndexViewModel
+    public class CachedJobModel : ICachedJob
     {
         public string Key
         {

@@ -30,6 +30,32 @@ namespace DashFire.Dashboard.Service.Job
             return Task.FromResult(ToModel(jobs));
         }
 
+        public async Task<IEnumerable<ICachedJob>> GetCachedAsync(CancellationToken cancellationToken)
+        {
+            var jobs = await _cacheManager.GetJobsAsync(cancellationToken);
+            if (!jobs.Any())
+                return new List<ICachedJob>().AsEnumerable();
+
+            var result = new List<Models.CachedJobModel>();
+            foreach(var job in jobs)
+            {
+                var jobDetails = await _cacheManager.GetJobDetailsAsync(job.Key, job.InstanceId, cancellationToken);
+
+                result.Add(new Models.CachedJobModel()
+                {
+                    Status = jobDetails.Status,
+                    LastStatusMessage = jobDetails.LastStatusMessage,
+                    InstanceId = job.InstanceId,
+                    IsOnline = jobDetails.IsOnline,
+                    Key = job.Key,
+                    LastExecutionDateTime = jobDetails.LastExecutionDateTime,
+                    NextExecutionDateTime = jobDetails.NextExecutionDateTime
+                });
+            }
+
+            return result;
+        }
+
         public async Task<long> UpsertAsync(string key, string instanceId, string parameters, CancellationToken cancellationToken)
         {
             if (key == null)

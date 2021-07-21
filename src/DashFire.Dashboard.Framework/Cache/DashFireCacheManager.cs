@@ -70,6 +70,15 @@ namespace DashFire.Dashboard.Framework.Cache
             return jobs.Select(x => x.Value);
         }
 
+        public async Task<Models.JobDetailsCacheModel> GetJobDetailsAsync(string key, string instanceId, CancellationToken cancellationToken)
+        {
+            var cacheResult = await _cache.GetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", cancellationToken);
+            if (cacheResult == null)
+                return default(Models.JobDetailsCacheModel);
+
+            return MessagePackSerializer.Deserialize<Models.JobDetailsCacheModel>(cacheResult, _options);
+        }
+
         public async Task SetJobAsync(string key, string instanceId, CancellationToken cancellationToken)
         {
             var cacheResult = await _cache.GetAsync(CacheKeyJob, cancellationToken);
@@ -130,13 +139,19 @@ namespace DashFire.Dashboard.Framework.Cache
             await _cache.SetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", serializedJobDetails, cancellationToken);
         }
 
-        private async Task<Models.JobDetailsCacheModel> GetJobDetailsAsync(string key, string instanceId, CancellationToken cancellationToken)
+        public async Task RemoveAllJobsJobs(CancellationToken cancellationToken)
         {
-            var cacheResult = await _cache.GetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", cancellationToken);
-            if (cacheResult == null)
-                return default(Models.JobDetailsCacheModel);
+            await _cache.RemoveAsync(CacheKeyJob, cancellationToken);
 
-            return MessagePackSerializer.Deserialize<Models.JobDetailsCacheModel>(cacheResult, _options);
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
+                var jobs = jobService.GetAsync(cancellationToken).GetAwaiter().GetResult();
+                foreach (var job in jobs)
+                {
+                    await _cache.RemoveAsync($"{CacheKeyJobDetails}_{job.Key}_{job.InstanceId}", cancellationToken);
+                }
+            }
         }
 
         private async Task InitializeCacheAsync(IEnumerable<IJob> jobModels, CancellationToken cancellationToken)
@@ -168,21 +183,6 @@ namespace DashFire.Dashboard.Framework.Cache
 
             var serializedJobs = MessagePackSerializer.Serialize<IDictionary<string, Models.JobCacheModel>>(jobs, _options);
             await _cache.SetAsync(CacheKeyJob, serializedJobs, cancellationToken);
-        }
-
-        public async Task RemoveAllJobsJobs(CancellationToken cancellationToken)
-        {
-            await _cache.RemoveAsync(CacheKeyJob, cancellationToken);
-
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
-                var jobs = jobService.GetAsync(cancellationToken).GetAwaiter().GetResult();
-                foreach (var job in jobs)
-                {
-                    await _cache.RemoveAsync($"{CacheKeyJobDetails}_{job.Key}_{job.InstanceId}", cancellationToken);
-                }
-            }
         }
     }
 }
