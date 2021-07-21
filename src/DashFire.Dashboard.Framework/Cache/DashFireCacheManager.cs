@@ -116,6 +116,18 @@ namespace DashFire.Dashboard.Framework.Cache
             await _cache.SetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", serializedJobDetails, cancellationToken);
         }
 
+        public async Task SetJobScheduleAsync(string key, string instanceId, DateTime nextExecutionDateTime, CancellationToken cancellationToken)
+        {
+            var jobDetails = await GetJobDetailsAsync(key, instanceId, cancellationToken);
+            if (jobDetails == null)
+                return;
+
+            jobDetails.NextExecutionDateTime = nextExecutionDateTime;
+
+            var serializedJobDetails = MessagePackSerializer.Serialize<Models.JobDetailsCacheModel>(jobDetails, _options);
+            await _cache.SetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", serializedJobDetails, cancellationToken);
+        }
+
         private async Task<Models.JobDetailsCacheModel> GetJobDetailsAsync(string key, string instanceId, CancellationToken cancellationToken)
         {
             var cacheResult = await _cache.GetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", cancellationToken);

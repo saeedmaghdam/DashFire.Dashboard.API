@@ -147,6 +147,8 @@ namespace DashFire.Dashboard.Service.Job
             currentJob.NextExecutionDateTime = nextExecutionDateTime;
 
             await _db.SaveChangesAsync(cancellationToken);
+
+            await _cacheManager.SetJobScheduleAsync(key, instanceId, nextExecutionDateTime, cancellationToken);
         }
 
         public static IEnumerable<IJob> ToModel(IEnumerable<Domain.Job> jobs)
