@@ -35,7 +35,11 @@ namespace DashFire.Dashboard.API.Apis.V1.Controllers
                 IsOnline = job.IsOnline,
                 LastStatusMessage = job.LastStatusMessage,
                 LastExecutionDateTime = job.LastExecutionDateTime,
-                NextExecutionDateTime = job.NextExecutionDateTime
+                NextExecutionDateTime = job.NextExecutionDateTime,
+                SystemName = job.SystemName,
+                Description = job.Description,
+                DisplayName = job.DisplayName,
+                RegistrationRequired = job.RegistrationRequired
             }));
         }
     }
