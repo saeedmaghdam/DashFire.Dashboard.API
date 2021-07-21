@@ -91,6 +91,27 @@ namespace DashFire.Dashboard.Framework.Cache
             }
         }
 
+        public async Task SetJobStatusMessageAsync(string key, string instanceId, string message, CancellationToken cancellationToken)
+        {
+            var jobDetails = await GetJobDetailsAsync(key, instanceId, cancellationToken);
+            if (jobDetails == null)
+                return;
+
+            jobDetails.LastStatusMessage = message;
+
+            var serializedJobDetails = MessagePackSerializer.Serialize<Models.JobDetailsCacheModel>(jobDetails, _options);
+            await _cache.SetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", serializedJobDetails, cancellationToken);
+        }
+
+        private async Task<Models.JobDetailsCacheModel> GetJobDetailsAsync(string key, string instanceId, CancellationToken cancellationToken)
+        {
+            var cacheResult = await _cache.GetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", cancellationToken);
+            if (cacheResult == null)
+                return default(Models.JobDetailsCacheModel);
+
+            return MessagePackSerializer.Deserialize<Models.JobDetailsCacheModel>(cacheResult, _options);
+        }
+
         private async Task InitializeCacheAsync(IEnumerable<IJob> jobModels, CancellationToken cancellationToken)
         {
             var jobs = new Dictionary<string, Models.JobCacheModel>();

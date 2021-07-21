@@ -123,6 +123,8 @@ namespace DashFire.Dashboard.Service.Job
             currentJob.LastStatusMessage = jobStatusMessage;
 
             await _db.SaveChangesAsync(cancellationToken);
+
+            await _cacheManager.SetJobStatusMessageAsync(key, instanceId, jobStatusMessage, cancellationToken);
         }
 
         public async Task PatchJobNextExecutionDateTimeAsync(string key, string instanceId, DateTime nextExecutionDateTime, CancellationToken cancellationToken)
