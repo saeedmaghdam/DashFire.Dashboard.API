@@ -73,7 +73,7 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
             using (var scope = _serviceProvider.CreateScope())
             {
                 var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
-                jobService.UpsertAsync(model.Key, model.InstanceId, JsonSerializer.Serialize(model.Parameters), cancellationTokenSource.Token).GetAwaiter().GetResult();
+                jobService.UpsertAsync(model.Key, model.InstanceId, JsonSerializer.Serialize(model.Parameters), model.SystemName, model.DisplayName, model.Description, model.RegistrationRequired, cancellationTokenSource.Token).GetAwaiter().GetResult();
             }
 
             var headers = new Dictionary<string, object>()

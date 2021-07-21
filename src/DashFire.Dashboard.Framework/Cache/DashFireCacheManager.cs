@@ -79,7 +79,7 @@ namespace DashFire.Dashboard.Framework.Cache
             return MessagePackSerializer.Deserialize<Models.JobDetailsCacheModel>(cacheResult, _options);
         }
 
-        public async Task SetJobAsync(string key, string instanceId, CancellationToken cancellationToken)
+        public async Task SetJobAsync(string key, string instanceId, string systemName, string displayName, string description, bool registrationRequired, CancellationToken cancellationToken)
         {
             var cacheResult = await _cache.GetAsync(CacheKeyJob, cancellationToken);
             var jobs = default(IDictionary<string, Models.JobCacheModel>);
@@ -93,7 +93,11 @@ namespace DashFire.Dashboard.Framework.Cache
                 jobs.Add($"{key}_{instanceId}", new Models.JobCacheModel()
                 {
                     Key = key,
-                    InstanceId = instanceId
+                    InstanceId = instanceId,
+                    SystemName = systemName,
+                    Description = description,
+                    DisplayName = displayName,
+                    RegistrationRequired = registrationRequired
                 });
 
                 var serializedJobs = MessagePackSerializer.Serialize<IDictionary<string, Models.JobCacheModel>>(jobs, _options);
@@ -163,7 +167,11 @@ namespace DashFire.Dashboard.Framework.Cache
                 jobs.Add($"{jobModel.Key}_{jobModel.InstanceId}", new Models.JobCacheModel()
                 {
                     Key = jobModel.Key,
-                    InstanceId = jobModel.InstanceId
+                    InstanceId = jobModel.InstanceId,
+                    SystemName = jobModel.SystemName,
+                    Description = jobModel.Description,
+                    DisplayName = jobModel.DisplayName,
+                    RegistrationRequired = jobModel.RegistrationRequired
                 });
 
 
@@ -175,7 +183,7 @@ namespace DashFire.Dashboard.Framework.Cache
                     Status = jobModel.Status,
                     IsOnline = jobModel.IsOnline,
                     LastExecutionDateTime = jobModel.LastExecutionDateTime,
-                    NextExecutionDateTime = jobModel.NextExecutionDateTime
+                    NextExecutionDateTime = jobModel.NextExecutionDateTime,
                 };
                 var serializedJobDetails = MessagePackSerializer.Serialize<Models.JobDetailsCacheModel>(jobDetails, _options);
                 await _cache.SetAsync($"{CacheKeyJobDetails}_{jobModel.Key}_{jobModel.InstanceId}", serializedJobDetails, cancellationToken);

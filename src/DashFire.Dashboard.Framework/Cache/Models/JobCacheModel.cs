@@ -18,5 +18,33 @@ namespace DashFire.Dashboard.Framework.Cache.Models
             get;
             set;
         }
+
+        [Key(2)]
+        public string SystemName
+        {
+            get;
+            set;
+        }
+
+        [Key(3)]
+        public string DisplayName
+        {
+            get;
+            set;
+        }
+
+        [Key(4)]
+        public string Description
+        {
+            get;
+            set;
+        }
+
+        [Key(5)]
+        public bool RegistrationRequired
+        {
+            get;
+            set;
+        }
     }
 }

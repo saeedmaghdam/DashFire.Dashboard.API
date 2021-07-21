@@ -12,7 +12,7 @@ namespace DashFire.Dashboard.Framework.Services.Job
 
         Task<IEnumerable<ICachedJob>> GetCachedAsync(CancellationToken cancellationToken);
 
-        Task<long> UpsertAsync(string key, string instanceId, string parameters, CancellationToken cancellationToken);
+        Task<long> UpsertAsync(string key, string instanceId, string parameters, string systemName, string displayName, string description, bool registrationRequired, CancellationToken cancellationToken);
 
         Task PatchJobExecutionStatusAsync(string key, string instanceId, CancellationToken cancellationToken);
 

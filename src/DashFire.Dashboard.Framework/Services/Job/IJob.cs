@@ -52,5 +52,29 @@ namespace DashFire.Dashboard.Framework.Services.Job
             get;
             set;
         }
+
+        string SystemName
+        {
+            get;
+            set;
+        }
+
+        string DisplayName
+        {
+            get;
+            set;
+        }
+
+        string Description
+        {
+            get;
+            set;
+        }
+
+        bool RegistrationRequired
+        {
+            get;
+            set;
+        }
     }
 }

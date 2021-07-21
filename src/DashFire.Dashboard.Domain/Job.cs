@@ -62,5 +62,33 @@ namespace DashFire.Dashboard.Domain
             get;
             set;
         }
+
+        [Column("system_name")]
+        public string SystemName
+        {
+            get;
+            set;
+        }
+
+        [Column("display_name")]
+        public string DisplayName
+        {
+            get;
+            set;
+        }
+
+        [Column("description")]
+        public string Description
+        {
+            get;
+            set;
+        }
+
+        [Column("registration_required")]
+        public bool RegistrationRequired
+        {
+            get;
+            set;
+        }
     }
 }

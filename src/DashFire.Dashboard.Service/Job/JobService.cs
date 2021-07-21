@@ -56,14 +56,14 @@ namespace DashFire.Dashboard.Service.Job
             return result;
         }
 
-        public async Task<long> UpsertAsync(string key, string instanceId, string parameters, CancellationToken cancellationToken)
+        public async Task<long> UpsertAsync(string key, string instanceId, string parameters, string systemName, string displayName, string description, bool registrationRequired, CancellationToken cancellationToken)
         {
             if (key == null)
                 throw new Exception("Job's key is required.");
             if (instanceId == null)
                 throw new Exception("Job's instance id is required.");
 
-            var currentJob = _db.Jobs.Where(x => x.Key == key && x.InstanceId == instanceId).SingleOrDefault();
+            var currentJob = _db.Jobs.Where(x => x.Key == key && x.InstanceId == instanceId && x.RecordStatus != RecordStatus.Deleted).SingleOrDefault();
             if (currentJob == null)
             {
                 var job = new Domain.Job()
@@ -75,7 +75,11 @@ namespace DashFire.Dashboard.Service.Job
                     RecordInsertDateTime = DateTime.Now,
                     RecordUpdateDateTime = DateTime.Now,
                     Key = key,
-                    ViewId = Guid.NewGuid()
+                    ViewId = Guid.NewGuid(),
+                    SystemName = systemName,
+                    DisplayName = displayName,
+                    Description = description,
+                    RegistrationRequired = registrationRequired
                 };
 
                 _db.Jobs.Add(job);
@@ -85,7 +89,7 @@ namespace DashFire.Dashboard.Service.Job
                 return job.Id;
             }
 
-            await _cacheManager.SetJobAsync(key, instanceId, cancellationToken);
+            await _cacheManager.SetJobAsync(key, instanceId, systemName, displayName, description, registrationRequired, cancellationToken);
 
             return currentJob.Id;
         }
@@ -107,7 +111,7 @@ namespace DashFire.Dashboard.Service.Job
 
             await _db.SaveChangesAsync(cancellationToken);
 
-            await _cacheManager.SetJobAsync(key, instanceId, cancellationToken);
+            await _cacheManager.SetJobAsync(key, instanceId, currentJob.SystemName, currentJob.DisplayName, currentJob.Description, currentJob.RegistrationRequired, cancellationToken);
         }
 
         public async Task PatchJobStatusAsync(string key, string instanceId, JobStatus jobStatus, CancellationToken cancellationToken)
@@ -191,7 +195,11 @@ namespace DashFire.Dashboard.Service.Job
                 RecordInsertDateTime = x.RecordInsertDateTime,
                 RecordStatus = x.RecordStatus,
                 RecordUpdateDateTime = x.RecordUpdateDateTime,
-                ViewId = x.ViewId
+                ViewId = x.ViewId,
+                SystemName = x.SystemName,
+                Description = x.Description,
+                DisplayName = x.DisplayName,
+                RegistrationRequired = x.RegistrationRequired
             });
         }
     }
