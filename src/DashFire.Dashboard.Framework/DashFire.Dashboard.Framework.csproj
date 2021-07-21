@@ -15,6 +15,7 @@
     <None Remove="MessagePack" />
     <None Remove="Cache\" />
     <None Remove="Cache\Models\" />
+    <None Remove="SerializerOptions\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Options\" />
@@ -22,6 +23,7 @@
     <Folder Include="Services\Job\" />
     <Folder Include="Cache\" />
     <Folder Include="Cache\Models\" />
+    <Folder Include="SerializerOptions\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
