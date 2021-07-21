@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using DashFire.Dashboard.Framework.Services.Job;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DashFire.Dashboard.API.Apis.V1.Controllers

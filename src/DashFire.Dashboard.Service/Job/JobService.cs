@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DashFire.Dashboard.Domain;
+using DashFire.Dashboard.Framework.Cache;
 using DashFire.Dashboard.Framework.Constants;
 using DashFire.Dashboard.Framework.Services.Job;
 
@@ -11,10 +13,21 @@ namespace DashFire.Dashboard.Service.Job
     public class JobService : IJobService
     {
         private readonly AppDbContext _db;
+        private readonly DashFireCacheManager _cacheManager;
 
-        public JobService(AppDbContext db)
+        public JobService(AppDbContext db, DashFireCacheManager cacheManager)
         {
             _db = db;
+            _cacheManager = cacheManager;
+        }
+
+        public Task<IEnumerable<IJob>> GetAsync(CancellationToken cancellationToken)
+        {
+            var jobs = _db.Jobs.Where(x => x.RecordStatus != RecordStatus.Deleted);
+            if (!jobs.Any())
+                return Task.FromResult(new List<IJob>().AsEnumerable());
+
+            return Task.FromResult(ToModel(jobs));
         }
 
         public async Task<long> UpsertAsync(string key, string instanceId, string parameters, CancellationToken cancellationToken)
@@ -29,14 +42,14 @@ namespace DashFire.Dashboard.Service.Job
             {
                 var job = new Domain.Job()
                 {
-                    RecordStatus = Framework.Constants.RecordStatus.Inserted,
+                    RecordStatus = RecordStatus.Inserted,
                     InstanceId = instanceId,
                     IsOnline = false,
                     Parameters = parameters,
-                    RecordInsertDateTime = System.DateTime.Now,
-                    RecordUpdateDateTime = System.DateTime.Now,
+                    RecordInsertDateTime = DateTime.Now,
+                    RecordUpdateDateTime = DateTime.Now,
                     Key = key,
-                    ViewId = System.Guid.NewGuid()
+                    ViewId = Guid.NewGuid()
                 };
 
                 _db.Jobs.Add(job);
@@ -45,6 +58,8 @@ namespace DashFire.Dashboard.Service.Job
 
                 return job.Id;
             }
+
+            await _cacheManager.SetJobAsync(key, instanceId, cancellationToken);
 
             return currentJob.Id;
         }
@@ -66,6 +81,8 @@ namespace DashFire.Dashboard.Service.Job
             currentJob.IsOnline = true;
 
             await _db.SaveChangesAsync(cancellationToken);
+
+            await _cacheManager.SetJobAsync(key, instanceId, cancellationToken);
         }
 
         public async Task PatchJobStatusAsync(string key, string instanceId, JobStatus jobStatus, CancellationToken cancellationToken)
@@ -126,6 +143,26 @@ namespace DashFire.Dashboard.Service.Job
             currentJob.NextExecutionDateTime = nextExecutionDateTime;
 
             await _db.SaveChangesAsync(cancellationToken);
+        }
+
+        public static IEnumerable<IJob> ToModel(IEnumerable<Domain.Job> jobs)
+        {
+            return jobs.Select(x => new Models.JobModel()
+            {
+                Id = x.Id,
+                InstanceId = x.InstanceId,
+                Status = (JobStatus)x.Status,
+                IsOnline = x.IsOnline,
+                Key = x.Key,
+                LastExecutionDateTime = x.LastExecutionDateTime,
+                LastStatusMessage = x.LastStatusMessage,
+                NextExecutionDateTime = x.NextExecutionDateTime,
+                Parameters = x.Parameters,
+                RecordInsertDateTime = x.RecordInsertDateTime,
+                RecordStatus = x.RecordStatus,
+                RecordUpdateDateTime = x.RecordUpdateDateTime,
+                ViewId = x.ViewId
+            });
         }
     }
 }

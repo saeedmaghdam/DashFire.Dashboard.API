@@ -1,4 +1,8 @@
-﻿using DashFire.Dashboard.Framework.Options;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using DashFire.Dashboard.Framework.Cache;
+using DashFire.Dashboard.Framework.Options;
 using DashFire.Dashboard.Framework.Services.Job;
 using DashFire.Dashboard.Service.Job;
 using Microsoft.AspNetCore.Builder;
@@ -55,11 +59,24 @@ namespace DashFire.Dashboard.API
             }, ServiceLifetime.Scoped);
 
             services.AddScoped<IJobService, JobService>();
+
+            services.AddDistributedRedisCache(option =>
+            {
+                option.Configuration = Configuration.GetValue<string>("ApplicationOptions:RedisOptions:ConnectionString"); ;
+                option.InstanceName = Configuration.GetValue<string>("ApplicationOptions:RedisOptions:InstanceName");
+            });
+
+            services.AddSingleton<DashFireCacheManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var cacheManager = app.ApplicationServices.CreateScope().ServiceProvider.GetService<DashFireCacheManager>();
+            cacheManager.InitializeAsync(CancellationToken.None).GetAwaiter().GetResult();
+
+            Task.Delay(TimeSpan.FromSeconds(10), CancellationToken.None).GetAwaiter().GetResult();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

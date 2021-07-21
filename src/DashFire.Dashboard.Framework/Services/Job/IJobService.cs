@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DashFire.Dashboard.Framework.Constants;
@@ -7,6 +8,8 @@ namespace DashFire.Dashboard.Framework.Services.Job
 {
     public interface IJobService
     {
+        Task<IEnumerable<IJob>> GetAsync(CancellationToken cancellationToken);
+
         Task<long> UpsertAsync(string key, string instanceId, string parameters, CancellationToken cancellationToken);
 
         Task PatchJobExecutionStatusAsync(string key, string instanceId, CancellationToken cancellationToken);

@@ -1,14 +1,14 @@
 ﻿namespace DashFire.Dashboard.Framework.Options
 {
-    public class ApplicationOptions
+    public class RedisOptions
     {
-        public RabbitMqOptions RabbitMqOptions
+        public string ConnectionString
         {
             get;
             set;
         }
 
-        public RedisOptions RedisOptions
+        public string InstanceName
         {
             get;
             set;

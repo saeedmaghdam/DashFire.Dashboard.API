@@ -14,16 +14,16 @@ namespace DashFire.Dashboard.API
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureServices(services =>
+                {
+                    services.AddHostedService<RegistrationSubscriber>();
+                    services.AddHostedService<HeartBitSubscriber>();
+                    services.AddHostedService<JobStatusSubscriber>();
+                    services.AddHostedService<LogJobStatusSubscriber>();
+                    services.AddHostedService<JobScheduleSubscriber>();
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.ConfigureServices(services =>
-                    {
-                        services.AddHostedService<RegistrationSubscriber>();
-                        services.AddHostedService<HeartBitSubscriber>();
-                        services.AddHostedService<JobStatusSubscriber>();
-                        services.AddHostedService<LogJobStatusSubscriber>();
-                        services.AddHostedService<JobScheduleSubscriber>();
-                    });
                     webBuilder.UseStartup<Startup>();
                 });
     }

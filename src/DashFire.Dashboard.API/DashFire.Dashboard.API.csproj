@@ -28,6 +28,8 @@
     <None Remove="RabbitMQ.Client" />
     <None Remove="Workers\Subscribers\Models\" />
     <None Remove="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <None Remove="StackExchange.Redis" />
+    <None Remove="Microsoft.Extensions.Caching.Redis" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apis\" />
@@ -42,6 +44,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
     <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DashFire.Dashboard.Framework\DashFire.Dashboard.Framework.csproj">

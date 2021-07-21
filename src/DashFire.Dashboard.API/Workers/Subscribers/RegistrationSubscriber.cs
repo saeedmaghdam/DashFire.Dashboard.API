@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using DashFire.Dashboard.Framework.Cache;
 using DashFire.Dashboard.Framework.Constants;
 using DashFire.Dashboard.Framework.Options;
 using DashFire.Dashboard.Framework.Services.Job;
@@ -27,8 +28,10 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
         private readonly IConnection _connection;
         private readonly IModel _channel;
 
-        public RegistrationSubscriber(IOptions<ApplicationOptions> options, IServiceProvider serviceProvider)
+        public RegistrationSubscriber(IOptions<ApplicationOptions> options, IServiceProvider serviceProvider, DashFireCacheManager cacheManager)
         {
+            cacheManager.InitializeAsync(CancellationToken.None).GetAwaiter().GetResult();
+
             _options = options;
             _serviceProvider = serviceProvider;
 

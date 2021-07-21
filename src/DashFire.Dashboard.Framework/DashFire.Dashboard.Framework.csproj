@@ -11,13 +11,21 @@
     <None Remove="Domain\" />
     <None Remove="Services\" />
     <None Remove="Services\Job\" />
+    <None Remove="StackExchange.Redis" />
+    <None Remove="MessagePack" />
+    <None Remove="Cache\" />
+    <None Remove="Cache\Models\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Options\" />
     <Folder Include="Services\" />
     <Folder Include="Services\Job\" />
+    <Folder Include="Cache\" />
+    <Folder Include="Cache\Models\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
+    <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
+    <PackageReference Include="MessagePack" Version="2.2.113" />
   </ItemGroup>
 </Project>
