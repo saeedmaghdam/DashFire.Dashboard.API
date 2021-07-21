@@ -101,7 +101,7 @@ namespace DashFire.Dashboard.Service.Job
             if (instanceId == null)
                 throw new Exception("Job's instance id is required.");
 
-            var currentJob = _db.Jobs.Where(x => x.Key == key && x.InstanceId == instanceId).SingleOrDefault();
+            var currentJob = _db.Jobs.Where(x => x.Key == key && x.InstanceId == instanceId && x.RecordStatus != RecordStatus.Deleted).SingleOrDefault();
             if (currentJob == null)
                 throw new Exception($"Job with key {key} and instance id {instanceId} not found.");
 
@@ -121,7 +121,7 @@ namespace DashFire.Dashboard.Service.Job
             if (instanceId == null)
                 throw new Exception("Job's instance id is required.");
 
-            var currentJob = _db.Jobs.Where(x => x.Key == key && x.InstanceId == instanceId).SingleOrDefault();
+            var currentJob = _db.Jobs.Where(x => x.Key == key && x.InstanceId == instanceId && x.RecordStatus != RecordStatus.Deleted).SingleOrDefault();
             if (currentJob == null)
                 throw new Exception($"Job with key {key} and instance id {instanceId} not found.");
 
@@ -144,7 +144,7 @@ namespace DashFire.Dashboard.Service.Job
             if (instanceId == null)
                 throw new Exception("Job's instance id is required.");
 
-            var currentJob = _db.Jobs.Where(x => x.Key == key && x.InstanceId == instanceId).SingleOrDefault();
+            var currentJob = _db.Jobs.Where(x => x.Key == key && x.InstanceId == instanceId && x.RecordStatus != RecordStatus.Deleted).SingleOrDefault();
             if (currentJob == null)
                 throw new Exception($"Job with key {key} and instance id {instanceId} not found.");
 
@@ -165,7 +165,7 @@ namespace DashFire.Dashboard.Service.Job
             if (instanceId == null)
                 throw new Exception("Job's instance id is required.");
 
-            var currentJob = _db.Jobs.Where(x => x.Key == key && x.InstanceId == instanceId).SingleOrDefault();
+            var currentJob = _db.Jobs.Where(x => x.Key == key && x.InstanceId == instanceId && x.RecordStatus != RecordStatus.Deleted).SingleOrDefault();
             if (currentJob == null)
                 throw new Exception($"Job with key {key} and instance id {instanceId} not found.");
 
