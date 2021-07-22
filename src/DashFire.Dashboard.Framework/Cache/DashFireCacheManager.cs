@@ -145,6 +145,42 @@ namespace DashFire.Dashboard.Framework.Cache
             await _cache.SetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", serializedJobDetails, cancellationToken);
         }
 
+        public async Task SetJobHeartBitAsync(string key, string instanceId, CancellationToken cancellationToken)
+        {
+            var jobDetails = await GetJobDetailsAsync(key, instanceId, cancellationToken);
+            if (jobDetails == null)
+                return;
+
+            jobDetails.HeartBitDateTimeTicks = DateTime.Now.Ticks;
+
+            var serializedJobDetails = MessagePackSerializer.Serialize<Models.JobDetailsCacheModel>(jobDetails, _options);
+            await _cache.SetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", serializedJobDetails, cancellationToken);
+        }
+
+        public async Task SetJobOfflineAsync(string key, string instanceId, CancellationToken cancellationToken)
+        {
+            var jobDetails = await GetJobDetailsAsync(key, instanceId, cancellationToken);
+            if (jobDetails == null)
+                return;
+
+            jobDetails.IsOnline = false;
+
+            var serializedJobDetails = MessagePackSerializer.Serialize<Models.JobDetailsCacheModel>(jobDetails, _options);
+            await _cache.SetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", serializedJobDetails, cancellationToken);
+        }
+
+        public async Task SetJobOnlineAsync(string key, string instanceId, CancellationToken cancellationToken)
+        {
+            var jobDetails = await GetJobDetailsAsync(key, instanceId, cancellationToken);
+            if (jobDetails == null)
+                return;
+
+            jobDetails.IsOnline = true;
+
+            var serializedJobDetails = MessagePackSerializer.Serialize<Models.JobDetailsCacheModel>(jobDetails, _options);
+            await _cache.SetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", serializedJobDetails, cancellationToken);
+        }
+
         public async Task RemoveAllJobsJobs(CancellationToken cancellationToken)
         {
             await _cache.RemoveAsync(CacheKeyJob, cancellationToken);
@@ -187,6 +223,7 @@ namespace DashFire.Dashboard.Framework.Cache
                     IsOnline = jobModel.IsOnline,
                     LastExecutionDateTime = jobModel.LastExecutionDateTime,
                     NextExecutionDateTime = jobModel.NextExecutionDateTime,
+                    HeartBitDateTimeTicks = jobModel.HeartBitDateTime.HasValue ? jobModel.HeartBitDateTime.Value.Ticks : 0
                 };
                 var serializedJobDetails = MessagePackSerializer.Serialize<Models.JobDetailsCacheModel>(jobDetails, _options);
                 await _cache.SetAsync($"{CacheKeyJobDetails}_{jobModel.Key}_{jobModel.InstanceId}", serializedJobDetails, cancellationToken);

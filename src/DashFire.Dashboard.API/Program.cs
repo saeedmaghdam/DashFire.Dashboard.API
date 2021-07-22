@@ -1,4 +1,5 @@
-﻿using DashFire.Dashboard.API.Workers.Subscribers;
+﻿using DashFire.Dashboard.API.Workers.Jobs;
+using DashFire.Dashboard.API.Workers.Subscribers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,6 +17,8 @@ namespace DashFire.Dashboard.API
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices(services =>
                 {
+                    services.AddHostedService<JobExpirationValidatorJob>();
+
                     services.AddHostedService<RegistrationSubscriber>();
                     services.AddHostedService<HeartBitSubscriber>();
                     services.AddHostedService<JobStatusSubscriber>();

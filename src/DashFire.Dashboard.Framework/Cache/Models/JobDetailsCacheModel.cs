@@ -55,5 +55,12 @@ namespace DashFire.Dashboard.Framework.Cache.Models
             get;
             set;
         }
+
+        [Key(7)]
+        public long HeartBitDateTimeTicks
+        {
+            get;
+            set;
+        }
     }
 }

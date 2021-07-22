@@ -77,5 +77,11 @@ namespace DashFire.Dashboard.Framework.Services.Job
             get;
             set;
         }
+
+        DateTime? HeartBitDateTime
+        {
+            get;
+            set;
+        }
     }
 }

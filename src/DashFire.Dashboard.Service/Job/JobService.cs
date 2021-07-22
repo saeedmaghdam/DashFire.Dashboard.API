@@ -60,7 +60,8 @@ namespace DashFire.Dashboard.Service.Job
                         DisplayName = x.DisplayName,
                         ParameterName = x.ParameterName,
                         TypeFullName = x.TypeFullName
-                    })
+                    }),
+                    HeartBitDateTime = new DateTime(jobDetails.HeartBitDateTimeTicks)
                 });
             }
 
@@ -101,11 +102,12 @@ namespace DashFire.Dashboard.Service.Job
             }
 
             await _cacheManager.SetJobAsync(key, instanceId, systemName, displayName, description, registrationRequired, parameters, cancellationToken);
+            await _cacheManager.SetJobOnlineAsync(key, instanceId, cancellationToken);
 
             return currentJob.Id;
         }
 
-        public async Task PatchJobExecutionStatusAsync(string key, string instanceId, CancellationToken cancellationToken)
+        public async Task PatchJobHeartBitAsync(string key, string instanceId, CancellationToken cancellationToken)
         {
             if (key == null)
                 throw new Exception("Job's key is required.");
@@ -118,11 +120,14 @@ namespace DashFire.Dashboard.Service.Job
 
             var now = DateTime.Now;
             currentJob.RecordUpdateDateTime = now;
+            currentJob.HeartBitDateTime = now;
             currentJob.IsOnline = true;
 
             await _db.SaveChangesAsync(cancellationToken);
 
             await _cacheManager.SetJobAsync(key, instanceId, currentJob.SystemName, currentJob.DisplayName, currentJob.Description, currentJob.RegistrationRequired, currentJob.Parameters, cancellationToken);
+            await _cacheManager.SetJobHeartBitAsync(key, instanceId, cancellationToken);
+            await _cacheManager.SetJobOnlineAsync(key, instanceId, cancellationToken);
         }
 
         public async Task PatchJobStatusAsync(string key, string instanceId, JobStatus jobStatus, CancellationToken cancellationToken)
@@ -190,6 +195,19 @@ namespace DashFire.Dashboard.Service.Job
             await _cacheManager.SetJobScheduleAsync(key, instanceId, nextExecutionDateTime, cancellationToken);
         }
 
+        public async Task PatchJobToOfflineAsync(string key, string instanceId, CancellationToken cancellationToken)
+        {
+            var job = _db.Jobs.Where(x => x.Key == key && x.InstanceId == instanceId && x.RecordStatus != RecordStatus.Deleted).Single();
+
+            job.IsOnline = false;
+            job.RecordUpdateDateTime = DateTime.Now;
+            job.RecordStatus = RecordStatus.Updated;
+
+            await _db.SaveChangesAsync(cancellationToken);
+
+            await _cacheManager.SetJobOfflineAsync(job.Key, job.InstanceId, cancellationToken);
+        }
+
         public static IEnumerable<IJob> ToModel(IEnumerable<Domain.Job> jobs)
         {
             return jobs.Select(x => new Models.JobModel()
@@ -210,7 +228,8 @@ namespace DashFire.Dashboard.Service.Job
                 SystemName = x.SystemName,
                 Description = x.Description,
                 DisplayName = x.DisplayName,
-                RegistrationRequired = x.RegistrationRequired
+                RegistrationRequired = x.RegistrationRequired,
+                HeartBitDateTime = x.HeartBitDateTime
             });
         }
     }

@@ -14,12 +14,14 @@ namespace DashFire.Dashboard.Framework.Services.Job
 
         Task<long> UpsertAsync(string key, string instanceId, string parameters, string systemName, string displayName, string description, bool registrationRequired, CancellationToken cancellationToken);
 
-        Task PatchJobExecutionStatusAsync(string key, string instanceId, CancellationToken cancellationToken);
+        Task PatchJobHeartBitAsync(string key, string instanceId, CancellationToken cancellationToken);
 
         Task PatchJobStatusAsync(string key, string instanceId, JobStatus jobStatus, CancellationToken cancellationToken);
 
         Task PatchJobStatusMessageAsync(string key, string instanceId, string jobStatusMessage, CancellationToken cancellationToken);
 
         Task PatchJobNextExecutionDateTimeAsync(string key, string instanceId, DateTime nextExecutionDateTime, CancellationToken cancellationToken);
+
+        Task PatchJobToOfflineAsync(string key, string instanceId, CancellationToken cancellationToken);
     }
 }

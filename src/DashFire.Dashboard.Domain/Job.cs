@@ -90,5 +90,12 @@ namespace DashFire.Dashboard.Domain
             get;
             set;
         }
+
+        [Column("heartbit_date_time")]
+        public DateTime? HeartBitDateTime
+        {
+            get;
+            set;
+        }
     }
 }

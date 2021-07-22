@@ -49,7 +49,8 @@ namespace DashFire.Dashboard.API.Apis.V1.Controllers
                     DisplayName = x.DisplayName,
                     ParameterName = x.ParameterName,
                     TypeFullName = x.TypeFullName
-                })
+                }),
+                HeartBitDateTime = job.HeartBitDateTime
             }));
         }
 
