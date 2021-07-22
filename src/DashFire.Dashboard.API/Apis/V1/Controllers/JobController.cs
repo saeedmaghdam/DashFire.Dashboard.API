@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DashFire.Dashboard.Framework.Services.Job;
+using DashFire.Dashboard.Framework.Services.Log;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DashFire.Dashboard.API.Apis.V1.Controllers
@@ -12,10 +15,12 @@ namespace DashFire.Dashboard.API.Apis.V1.Controllers
     public class JobController : Controller
     {
         private readonly IJobService _jobService;
+        private readonly ILogService _logService;
 
-        public JobController(IJobService jobService)
+        public JobController(IJobService jobService, ILogService logService)
         {
             _jobService = jobService;
+            _logService = logService;
         }
 
         [HttpGet]
@@ -45,6 +50,20 @@ namespace DashFire.Dashboard.API.Apis.V1.Controllers
                     ParameterName = x.ParameterName,
                     TypeFullName = x.TypeFullName
                 })
+            }));
+        }
+
+        [HttpGet("{id}/Logs")]
+        public async Task<ActionResult<List<Models.Job.LogViewModel>>> GetLogsAsync([FromRoute] long id, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate, [FromQuery] int? totalItems, CancellationToken cancellationToken)
+        {
+            var logs = await _logService.GetAsync(id, startDate, endDate, totalItems, cancellationToken);
+            if (!logs.Any())
+                return NoContent();
+
+            return Ok(logs.Select(log => new Models.Job.LogViewModel()
+            {
+                Message = log.Message,
+                RecordInsertDateTime = log.RecordInsertDateTime
             }));
         }
     }
