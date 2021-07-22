@@ -119,6 +119,7 @@ namespace DashFire.Dashboard.Service.Job
                 throw new Exception($"Job with key {key} and instance id {instanceId} not found.");
 
             var now = DateTime.Now;
+            currentJob.RecordStatus = RecordStatus.Updated;
             currentJob.RecordUpdateDateTime = now;
             currentJob.HeartBitDateTime = now;
             currentJob.IsOnline = true;
@@ -144,6 +145,7 @@ namespace DashFire.Dashboard.Service.Job
             var now = DateTime.Now;
             if (jobStatus == JobStatus.Running)
                 currentJob.LastExecutionDateTime = now;
+            currentJob.RecordStatus = RecordStatus.Updated;
             currentJob.RecordUpdateDateTime = now;
             currentJob.IsOnline = true;
             currentJob.Status = (short)jobStatus;
@@ -165,6 +167,7 @@ namespace DashFire.Dashboard.Service.Job
                 throw new Exception($"Job with key {key} and instance id {instanceId} not found.");
 
             var now = DateTime.Now;
+            currentJob.RecordStatus = RecordStatus.Updated;
             currentJob.RecordUpdateDateTime = now;
             currentJob.IsOnline = true;
             currentJob.LastStatusMessage = jobStatusMessage;
@@ -186,6 +189,7 @@ namespace DashFire.Dashboard.Service.Job
                 throw new Exception($"Job with key {key} and instance id {instanceId} not found.");
 
             var now = DateTime.Now;
+            currentJob.RecordStatus = RecordStatus.Updated;
             currentJob.RecordUpdateDateTime = now;
             currentJob.IsOnline = true;
             currentJob.NextExecutionDateTime = nextExecutionDateTime;
@@ -200,8 +204,8 @@ namespace DashFire.Dashboard.Service.Job
             var job = _db.Jobs.Where(x => x.Key == key && x.InstanceId == instanceId && x.RecordStatus != RecordStatus.Deleted).Single();
 
             job.IsOnline = false;
-            job.RecordUpdateDateTime = DateTime.Now;
             job.RecordStatus = RecordStatus.Updated;
+            job.RecordUpdateDateTime = DateTime.Now;
 
             await _db.SaveChangesAsync(cancellationToken);
 
