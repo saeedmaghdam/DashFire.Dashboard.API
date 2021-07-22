@@ -24,6 +24,7 @@ namespace DashFire.Dashboard.API
                     services.AddHostedService<JobStatusSubscriber>();
                     services.AddHostedService<LogJobStatusSubscriber>();
                     services.AddHostedService<JobScheduleSubscriber>();
+                    services.AddHostedService<ShutdownSubscriber>();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

@@ -6,6 +6,7 @@
         HeartBit,
         JobStatus,
         LogJobStatus,
-        JobSchedule
+        JobSchedule,
+        Shutdown
     }
 }
