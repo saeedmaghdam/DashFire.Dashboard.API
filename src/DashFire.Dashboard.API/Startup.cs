@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using DashFire.Dashboard.Framework.Cache;
 using DashFire.Dashboard.Framework.Options;
 using DashFire.Dashboard.Framework.Services.Job;
+using DashFire.Dashboard.Framework.Services.Log;
 using DashFire.Dashboard.Service.Job;
+using DashFire.Dashboard.Service.Log;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -59,6 +61,7 @@ namespace DashFire.Dashboard.API
             }, ServiceLifetime.Scoped);
 
             services.AddScoped<IJobService, JobService>();
+            services.AddScoped<ILogService, LogService>();
 
             services.AddDistributedRedisCache(option =>
             {

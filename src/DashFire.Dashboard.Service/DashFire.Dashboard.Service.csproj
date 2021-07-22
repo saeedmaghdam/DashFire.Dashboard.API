@@ -7,10 +7,14 @@
   <ItemGroup>
     <None Remove="Job\" />
     <None Remove="Job\Models\" />
+    <None Remove="Log\" />
+    <None Remove="Log\Models\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Job\" />
     <Folder Include="Job\Models\" />
+    <Folder Include="Log\" />
+    <Folder Include="Log\Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DashFire.Dashboard.Framework\DashFire.Dashboard.Framework.csproj" />

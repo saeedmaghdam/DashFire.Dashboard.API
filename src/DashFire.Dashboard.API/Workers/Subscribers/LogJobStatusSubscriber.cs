@@ -7,6 +7,7 @@ using DashFire.Dashboard.Framework.Cache;
 using DashFire.Dashboard.Framework.Constants;
 using DashFire.Dashboard.Framework.Options;
 using DashFire.Dashboard.Framework.Services.Job;
+using DashFire.Dashboard.Framework.Services.Log;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -72,7 +73,10 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
             using (var scope = _serviceProvider.CreateScope())
             {
                 var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
+                var logService = scope.ServiceProvider.GetRequiredService<ILogService>();
+
                 jobService.PatchJobStatusMessageAsync(model.Key, model.InstanceId, model.Message, cancellationTokenSource.Token).GetAwaiter().GetResult();
+                logService.CreateByJobKeyAndInstanceIdAsync(model.Key, model.InstanceId, model.Message, cancellationTokenSource.Token).GetAwaiter().GetResult();
             }
         }
     }

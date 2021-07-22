@@ -21,5 +21,11 @@ namespace DashFire.Dashboard.Domain
             get;
             set;
         }
+
+        public DbSet<Log> Logs
+        {
+            get;
+            set;
+        }
     }
 }
