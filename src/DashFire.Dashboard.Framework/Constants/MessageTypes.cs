@@ -7,6 +7,7 @@
         JobStatus,
         LogJobStatus,
         JobSchedule,
-        Shutdown
+        Shutdown,
+        JobExecutionRequest
     }
 }

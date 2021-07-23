@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using DashFire.Dashboard.Framework;
 using DashFire.Dashboard.Framework.Cache;
 using DashFire.Dashboard.Framework.Constants;
 using DashFire.Dashboard.Framework.Options;
@@ -86,7 +87,7 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
                 }
             };
 
-            QueueManager.DeclareExchangeAndQueue(_channel, _dashboardSideExchangeName, model.Key, model.InstanceId, headers);
+            //QueueManager.DeclareExchangeAndQueue(_channel, _dashboardSideExchangeName, model.Key, model.InstanceId, headers);
 
             var properties = _channel.CreateBasicProperties();
             properties.Persistent = false;

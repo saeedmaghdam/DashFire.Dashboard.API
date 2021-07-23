@@ -10,9 +10,15 @@ namespace DashFire.Dashboard.Framework.Services.Job
     {
         Task<IEnumerable<IJob>> GetAsync(CancellationToken cancellationToken);
 
+        Task<IEnumerable<IJob>> GetServiceModeJobsIncludingAllAliveNotServiceModeJobsAsync(CancellationToken cancellationToken);
+
+        Task<IJob> GetByIdAsync(long id, CancellationToken cancellationToken);
+
+        Task<IJob> GetByKeyInstanceIdAsync(string key, string instanceId, CancellationToken cancellationToken);
+
         Task<IEnumerable<ICachedJob>> GetCachedAsync(CancellationToken cancellationToken);
 
-        Task<long> UpsertAsync(string key, string instanceId, string parameters, string systemName, string displayName, string description, bool registrationRequired, CancellationToken cancellationToken);
+        Task<long> UpsertAsync(string key, string instanceId, string parameters, string systemName, string displayName, string description, bool registrationRequired, JobExecutionMode jobExecutionMode, string originalInstanceId, CancellationToken cancellationToken);
 
         Task PatchJobHeartBitAsync(string key, string instanceId, CancellationToken cancellationToken);
 
@@ -23,5 +29,9 @@ namespace DashFire.Dashboard.Framework.Services.Job
         Task PatchJobNextExecutionDateTimeAsync(string key, string instanceId, DateTime nextExecutionDateTime, CancellationToken cancellationToken);
 
         Task PatchJobToOfflineAsync(string key, string instanceId, CancellationToken cancellationToken);
+
+        Task PatchJobToShutdownAsync(string key, string instanceId, CancellationToken cancellationToken);
+
+        Task ExecuteAsync(string key, string instanceId, IEnumerable<IJobParameterValue> parameters, CancellationToken cancellationToken);
     }
 }

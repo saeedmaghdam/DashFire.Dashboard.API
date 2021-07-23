@@ -25,13 +25,13 @@ namespace DashFire.Dashboard.Service.Job.Models
             set;
         }
 
-        public DateTime LastExecutionDateTime
+        public DateTime? LastExecutionDateTime
         {
             get;
             set;
         }
 
-        public DateTime NextExecutionDateTime
+        public DateTime? NextExecutionDateTime
         {
             get;
             set;
@@ -80,6 +80,18 @@ namespace DashFire.Dashboard.Service.Job.Models
         }
 
         public DateTime? HeartBitDateTime
+        {
+            get;
+            set;
+        }
+
+        public JobExecutionMode JobExecutionMode
+        {
+            get;
+            set;
+        }
+
+        public string OriginalInstanceId
         {
             get;
             set;

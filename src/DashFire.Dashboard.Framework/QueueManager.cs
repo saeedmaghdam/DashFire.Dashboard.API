@@ -2,14 +2,14 @@
 using DashFire.Dashboard.Framework.Constants;
 using RabbitMQ.Client;
 
-namespace DashFire.Dashboard.API.Workers.Subscribers
+namespace DashFire.Dashboard.Framework
 {
     public class QueueManager
     {
         private const string _serviceSideExchangeName = "DashFire.Dashboard";
         private const string _serviceSideQueueName = "DashFire.Dashboard";
 
-        internal static void Initialize(IModel channel)
+        public static void Initialize(IModel channel)
         {
             // Declare dashboard exchanges and queue
             channel.ExchangeDeclare(_serviceSideExchangeName, "headers", true);
@@ -93,7 +93,7 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
             });
         }
 
-        internal static void DeclareExchangeAndQueue(IModel channel, string exchangeName, string jobKey, string jobInstanceId, IDictionary<string, object> headers)
+        public static void DeclareExchangeAndQueue(IModel channel, string exchangeName, string jobKey, string jobInstanceId, IDictionary<string, object> headers)
         {
             var dashboardSideQueueName = $"{exchangeName}_{jobKey}_{jobInstanceId}";
 
