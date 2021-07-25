@@ -1,5 +1,4 @@
-﻿using System;
-using DashFire.Dashboard.Framework.Constants;
+﻿using DashFire.Dashboard.Framework.Constants;
 using MessagePack;
 
 namespace DashFire.Dashboard.Framework.Cache.Models

@@ -79,24 +79,19 @@ namespace DashFire.Dashboard.Service.Job
 
         public async Task<IEnumerable<ICachedJob>> GetCachedAsync(CancellationToken cancellationToken)
         {
-            var jobs = await _cacheManager.GetJobsAsync(cancellationToken);
-            if (!jobs.Any())
-                return new List<ICachedJob>().AsEnumerable();
-
             var result = new List<Models.CachedJobModel>();
+            var jobs = await _cacheManager.GetJobsWithDetailsAsync(cancellationToken);
             foreach (var job in jobs)
             {
-                var jobDetails = await _cacheManager.GetJobDetailsAsync(job.Key, job.InstanceId, cancellationToken);
-
                 result.Add(new Models.CachedJobModel()
                 {
-                    Status = jobDetails.Status,
-                    LastStatusMessage = jobDetails.LastStatusMessage,
+                    Status = job.Status,
+                    LastStatusMessage = job.LastStatusMessage,
                     InstanceId = job.InstanceId,
-                    IsOnline = jobDetails.IsOnline,
+                    IsOnline = job.IsOnline,
                     Key = job.Key,
-                    LastExecutionDateTime = jobDetails.LastExecutionDateTime == 0 ? null : new DateTime(jobDetails.LastExecutionDateTime),
-                    NextExecutionDateTime = jobDetails.NextExecutionDateTime == 0 ? null : new DateTime(jobDetails.NextExecutionDateTime),
+                    LastExecutionDateTime = job.LastExecutionDateTime == 0 ? null : new DateTime(job.LastExecutionDateTime),
+                    NextExecutionDateTime = job.NextExecutionDateTime == 0 ? null : new DateTime(job.NextExecutionDateTime),
                     SystemName = job.SystemName,
                     Description = job.Description,
                     DisplayName = job.DisplayName,
@@ -108,7 +103,7 @@ namespace DashFire.Dashboard.Service.Job
                         ParameterName = x.ParameterName,
                         TypeFullName = x.TypeFullName
                     }),
-                    HeartBitDateTime = new DateTime(jobDetails.HeartBitDateTimeTicks),
+                    HeartBitDateTime = new DateTime(job.HeartBitDateTimeTicks),
                     JobExecutionMode = job.JobExecutionMode,
                     OriginalInstanceId = job.OriginalInstanceId
                 });

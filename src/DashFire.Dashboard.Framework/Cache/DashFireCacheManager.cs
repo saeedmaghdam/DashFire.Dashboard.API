@@ -18,6 +18,7 @@ namespace DashFire.Dashboard.Framework.Cache
     {
         private const string CacheKeyJob = "jobs";
         private const string CacheKeyJobDetails = "job_details";
+        private const string CacheKeyJobWithDetails = "jobs_with_details";
 
         private bool _isInitialized = false;
         private object _locker = new object();
@@ -67,7 +68,7 @@ namespace DashFire.Dashboard.Framework.Cache
             var cacheResult = await _cache.GetAsync(CacheKeyJob, cancellationToken);
             if (cacheResult == null)
                 return new List<Models.JobCacheModel>();
-            
+
             var jobs = MessagePackSerializer.Deserialize<IDictionary<string, Models.JobCacheModel>>(cacheResult, _options);
 
             return jobs.Select(x => x.Value);
@@ -80,6 +81,52 @@ namespace DashFire.Dashboard.Framework.Cache
                 return default(Models.JobDetailsCacheModel);
 
             return MessagePackSerializer.Deserialize<Models.JobDetailsCacheModel>(cacheResult, _options);
+        }
+
+        public async Task<IEnumerable<Models.JobWithDetailsCacheModel>> GetJobsWithDetailsAsync(CancellationToken cancellationToken)
+        {
+            var cacheResult = await _cache.GetAsync(CacheKeyJobWithDetails, cancellationToken);
+            if (cacheResult == null)
+            {
+                var jobs = await GetJobsAsync(cancellationToken);
+                if (!jobs.Any())
+                    return new List<Models.JobWithDetailsCacheModel>().AsEnumerable();
+
+                var result = new List<Models.JobWithDetailsCacheModel>();
+                foreach (var job in jobs)
+                {
+                    var jobDetails = await GetJobDetailsAsync(job.Key, job.InstanceId, cancellationToken);
+
+                    result.Add(new Models.JobWithDetailsCacheModel()
+                    {
+                        Description = job.Description,
+                        DisplayName = job.DisplayName,
+                        HeartBitDateTimeTicks = jobDetails.HeartBitDateTimeTicks,
+                        InstanceId = job.InstanceId,
+                        JobExecutionMode = job.JobExecutionMode,
+                        IsOnline = jobDetails.IsOnline,
+                        Key = job.Key,
+                        LastExecutionDateTime = jobDetails.LastExecutionDateTime,
+                        LastStatusMessage = jobDetails.LastStatusMessage,
+                        NextExecutionDateTime = jobDetails.NextExecutionDateTime,
+                        OriginalInstanceId = job.OriginalInstanceId,
+                        Parameters = job.Parameters,
+                        RegistrationRequired = job.RegistrationRequired,
+                        Status = jobDetails.Status,
+                        SystemName = job.SystemName
+                    });
+                }
+
+                var serializedJobsWithDetails = MessagePackSerializer.Serialize<List<Models.JobWithDetailsCacheModel>>(result, _options);
+                var options = new DistributedCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(3));
+                await _cache.SetAsync(CacheKeyJobWithDetails, serializedJobsWithDetails, options, cancellationToken);
+
+                return result;
+            }
+
+            var resultItems = MessagePackSerializer.Deserialize<IEnumerable<Models.JobWithDetailsCacheModel>>(cacheResult, _options);
+
+            return resultItems;
         }
 
         public async Task SetJobAsync(string key, string instanceId, string systemName, string displayName, string description, bool registrationRequired, string parameters, JobExecutionMode jobExecutionMode, string originalInstanceId, CancellationToken cancellationToken)

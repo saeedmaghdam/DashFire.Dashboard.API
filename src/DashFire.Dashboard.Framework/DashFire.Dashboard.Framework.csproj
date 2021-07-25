@@ -30,8 +30,6 @@
     <Folder Include="Options\" />
     <Folder Include="Services\" />
     <Folder Include="Services\Job\" />
-    <Folder Include="Cache\" />
-    <Folder Include="Cache\Models\" />
     <Folder Include="SerializerOptions\" />
     <Folder Include="Services\Log\" />
     <Folder Include="Utils\" />
