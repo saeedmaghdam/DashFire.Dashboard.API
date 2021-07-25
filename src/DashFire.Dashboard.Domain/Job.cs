@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using DashFire.Dashboard.Framework.Constants;
 using DashFire.Dashboard.Framework.Domains;
 
 namespace DashFire.Dashboard.Domain
@@ -7,6 +8,13 @@ namespace DashFire.Dashboard.Domain
     [Table("job", Schema = "job")]
     public class Job : Entity
     {
+        [ForeignKey("OriginalJobId")]
+        public Job OriginalJob
+        {
+            get;
+            set;
+        }
+
         [Column("key")]
         public string Key
         {
@@ -36,14 +44,14 @@ namespace DashFire.Dashboard.Domain
         }
 
         [Column("last_execution_date_time")]
-        public DateTime LastExecutionDateTime
+        public DateTime? LastExecutionDateTime
         {
             get;
             set;
         }
 
         [Column("next_execution_date_time")]
-        public DateTime NextExecutionDateTime
+        public DateTime? NextExecutionDateTime
         {
             get;
             set;
@@ -93,6 +101,20 @@ namespace DashFire.Dashboard.Domain
 
         [Column("heartbit_date_time")]
         public DateTime? HeartBitDateTime
+        {
+            get;
+            set;
+        }
+
+        [Column("job_execution_mode")]
+        public JobExecutionMode JobExecutionMode
+        {
+            get;
+            set;
+        }
+
+        [Column("original_job_id")]
+        public long? OriginalJobId
         {
             get;
             set;

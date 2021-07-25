@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using DashFire.Dashboard.Framework;
 using DashFire.Dashboard.Framework.Cache;
 using DashFire.Dashboard.Framework.Constants;
 using DashFire.Dashboard.Framework.Options;
@@ -69,11 +70,11 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
 
         private void ProcessMessage(Models.ShutdownModel model)
         {
-            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(20));
+            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(200));
             using (var scope = _serviceProvider.CreateScope())
             {
                 var jobService = scope.ServiceProvider.GetRequiredService<IJobService>();
-                jobService.PatchJobToOfflineAsync(model.Key, model.InstanceId, cancellationTokenSource.Token).GetAwaiter().GetResult();
+                jobService.PatchJobToShutdownAsync(model.Key, model.InstanceId, cancellationTokenSource.Token).GetAwaiter().GetResult();
             }
         }
     }

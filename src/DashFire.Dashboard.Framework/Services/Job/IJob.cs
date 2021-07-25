@@ -29,13 +29,13 @@ namespace DashFire.Dashboard.Framework.Services.Job
             set;
         }
 
-        DateTime LastExecutionDateTime
+        DateTime? LastExecutionDateTime
         {
             get;
             set;
         }
 
-        DateTime NextExecutionDateTime
+        DateTime? NextExecutionDateTime
         {
             get;
             set;
@@ -78,6 +78,18 @@ namespace DashFire.Dashboard.Framework.Services.Job
         }
 
         DateTime? HeartBitDateTime
+        {
+            get;
+            set;
+        }
+
+        JobExecutionMode JobExecutionMode
+        {
+            get;
+            set;
+        }
+
+        IJob OriginalJob
         {
             get;
             set;

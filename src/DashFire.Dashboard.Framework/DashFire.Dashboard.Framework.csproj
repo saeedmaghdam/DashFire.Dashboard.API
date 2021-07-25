@@ -4,6 +4,12 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
   <ItemGroup>
     <None Remove="Options\" />
     <None Remove="Constants\" />
@@ -18,6 +24,7 @@
     <None Remove="SerializerOptions\" />
     <None Remove="Services\Log\" />
     <None Remove="Utils\" />
+    <None Remove="RabbitMQ.Client" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Options\" />
@@ -33,5 +40,6 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
     <PackageReference Include="MessagePack" Version="2.2.113" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
   </ItemGroup>
 </Project>

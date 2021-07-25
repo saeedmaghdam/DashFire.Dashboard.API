@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DashFire.Dashboard.Framework.Constants;
 using MessagePack;
 
 namespace DashFire.Dashboard.Framework.Cache.Models
@@ -50,6 +51,20 @@ namespace DashFire.Dashboard.Framework.Cache.Models
 
         [Key(6)]
         public List<JobParameterCacheModel> Parameters
+        {
+            get;
+            set;
+        }
+
+        [Key(7)]
+        public JobExecutionMode JobExecutionMode
+        {
+            get;
+            set;
+        }
+
+        [Key(8)]
+        public string OriginalInstanceId
         {
             get;
             set;

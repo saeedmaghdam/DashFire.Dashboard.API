@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DashFire.Dashboard.Framework.Constants;
 
 namespace DashFire.Dashboard.API.Workers.Subscribers.Models
 {
@@ -41,6 +42,18 @@ namespace DashFire.Dashboard.API.Workers.Subscribers.Models
         }
 
         public bool RegistrationRequired
+        {
+            get;
+            set;
+        }
+
+        public JobExecutionMode JobExecutionMode
+        {
+            get;
+            set;
+        }
+
+        public string OriginalInstanceId
         {
             get;
             set;

@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DashFire.Dashboard.Framework.Options;
 using DashFire.Dashboard.Framework.Services.Job;
 using DashFire.Dashboard.Framework.Services.Log;
+using DashFire.Dashboard.Service.Job.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace DashFire.Dashboard.API.Apis.V1.Controllers
 {
@@ -17,7 +20,7 @@ namespace DashFire.Dashboard.API.Apis.V1.Controllers
         private readonly IJobService _jobService;
         private readonly ILogService _logService;
 
-        public JobController(IJobService jobService, ILogService logService)
+        public JobController(IOptions<ApplicationOptions> options, IJobService jobService, ILogService logService)
         {
             _jobService = jobService;
             _logService = logService;
@@ -50,7 +53,9 @@ namespace DashFire.Dashboard.API.Apis.V1.Controllers
                     ParameterName = x.ParameterName,
                     TypeFullName = x.TypeFullName
                 }),
-                HeartBitDateTime = job.HeartBitDateTime
+                HeartBitDateTime = job.HeartBitDateTime,
+                JobExecutionMode = job.JobExecutionMode,
+                OriginalInstanceId = job.OriginalInstanceId
             }));
         }
 
@@ -66,6 +71,22 @@ namespace DashFire.Dashboard.API.Apis.V1.Controllers
                 Message = log.Message,
                 RecordInsertDateTime = log.RecordInsertDateTime
             }));
+        }
+
+        [HttpPost("{key}/{instanceId}/Execute")]
+        public async Task<ActionResult> ExecuteAsync([FromRoute] string key, [FromRoute] string instanceId, [FromBody] Models.Job.ExecuteInputModel inputModel, CancellationToken cancellationToken)
+        {
+            var job = await _jobService.GetByKeyInstanceIdAsync(key, instanceId, cancellationToken);
+            if (job == null)
+                return NotFound();
+
+            await _jobService.ExecuteAsync(key, instanceId, inputModel.Parameters.Select(x => new JobParameterValueModel()
+            {
+                ParameterName = x.ParameterName,
+                Value = x.Value
+            }), cancellationToken);
+
+            return Ok();
         }
     }
 }

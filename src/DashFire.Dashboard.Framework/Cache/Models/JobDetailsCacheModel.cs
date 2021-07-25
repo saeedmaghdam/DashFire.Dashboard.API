@@ -29,14 +29,14 @@ namespace DashFire.Dashboard.Framework.Cache.Models
         }
 
         [Key(3)]
-        public DateTime LastExecutionDateTime
+        public long LastExecutionDateTime
         {
             get;
             set;
         }
 
         [Key(4)]
-        public DateTime NextExecutionDateTime
+        public long NextExecutionDateTime
         {
             get;
             set;

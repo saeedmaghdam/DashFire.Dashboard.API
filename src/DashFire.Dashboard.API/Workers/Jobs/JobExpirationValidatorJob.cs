@@ -50,12 +50,12 @@ namespace DashFire.Dashboard.API.Workers.Jobs
                             continue;
                         }
 
-                        if ((now - job.HeartBitDateTime.Value).TotalSeconds > 60)
+                        if ((now - job.HeartBitDateTime.Value).TotalMinutes > 2)
                             await jobService.PatchJobToOfflineAsync(job.Key, job.InstanceId, cancellationToken);
                     }
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken);
+                await Task.Delay(TimeSpan.FromMinutes(1), cancellationToken);
             } while (!cancellationToken.IsCancellationRequested);
         }
     }
