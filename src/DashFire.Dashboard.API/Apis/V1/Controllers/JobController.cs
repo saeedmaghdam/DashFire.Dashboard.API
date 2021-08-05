@@ -59,10 +59,14 @@ namespace DashFire.Dashboard.API.Apis.V1.Controllers
             }));
         }
 
-        [HttpGet("{id}/Logs")]
-        public async Task<ActionResult<List<Models.Job.LogViewModel>>> GetLogsAsync([FromRoute] long id, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate, [FromQuery] int? totalItems, CancellationToken cancellationToken)
+        [HttpGet("{key}/{instanceId}/Logs")]
+        public async Task<ActionResult<List<Models.Job.LogViewModel>>> GetLogsAsync([FromRoute] string key, [FromRoute] string instanceId, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate, [FromQuery] int? totalItems, CancellationToken cancellationToken)
         {
-            var logs = await _logService.GetAsync(id, startDate, endDate, totalItems, cancellationToken);
+            var job = await _jobService.GetByKeyInstanceIdAsync(key, instanceId, cancellationToken);
+            if (job == null)
+                return NotFound();
+
+            var logs = await _logService.GetAsync(job.Id, startDate, endDate, totalItems, cancellationToken);
             if (!logs.Any())
                 return NoContent();
 
