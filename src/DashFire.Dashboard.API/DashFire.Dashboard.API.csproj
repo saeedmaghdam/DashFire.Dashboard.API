@@ -35,6 +35,8 @@
     <None Remove="Apis\V1\Models\" />
     <None Remove="Apis\V1\Models\Job\" />
     <None Remove="Workers\Jobs\" />
+    <None Remove="Microsoft.Extensions.Hosting.WindowsServices" />
+    <None Remove="Microsoft.Extensions.Hosting.Systemd" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apis\" />
@@ -54,6 +56,8 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
     <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DashFire.Dashboard.Framework\DashFire.Dashboard.Framework.csproj">

@@ -18,6 +18,8 @@ namespace DashFire.Dashboard.API
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .UseWindowsService()
+                .UseSystemd()
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     config.SetBasePath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
