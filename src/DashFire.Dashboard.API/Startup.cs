@@ -14,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace DashFire.Dashboard.API
 {
@@ -63,10 +65,28 @@ namespace DashFire.Dashboard.API
             services.AddScoped<IJobService, JobService>();
             services.AddScoped<ILogService, LogService>();
 
-            services.AddDistributedRedisCache(option =>
+            services.Add(ServiceDescriptor.Singleton<IDistributedCache, RedisCache>());
+
+            services.AddStackExchangeRedisCache(option =>
             {
-                option.Configuration = Configuration.GetValue<string>("ApplicationOptions:RedisOptions:ConnectionString"); ;
+                option.Configuration = Configuration.GetValue<string>("ApplicationOptions:RedisOptions:ConnectionString");
                 option.InstanceName = Configuration.GetValue<string>("ApplicationOptions:RedisOptions:InstanceName");
+
+                option.ConfigurationOptions = new StackExchange.Redis.ConfigurationOptions()
+                {
+                    AbortOnConnectFail = false,
+                    EndPoints =
+                    {
+                        {
+                            Configuration.GetValue<string>("ApplicationOptions:RedisOptions:Ip"),
+                            int.Parse(Configuration.GetValue<string>("ApplicationOptions:RedisOptions:Port"))
+                        }
+                    },
+                    ConnectRetry = 99,
+                    ConnectTimeout = 5000,
+                    SyncTimeout = 5000,
+                    DefaultDatabase = 3
+                };
             });
 
             services.AddSingleton<DashFireCacheManager>();

@@ -37,6 +37,8 @@
     <None Remove="Workers\Jobs\" />
     <None Remove="Microsoft.Extensions.Hosting.WindowsServices" />
     <None Remove="Microsoft.Extensions.Hosting.Systemd" />
+    <None Remove="StackExchange.Redis.StrongName" />
+    <None Remove="Microsoft.Extensions.Caching.StackExchangeRedis" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Apis\" />
@@ -55,9 +57,9 @@
     <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
     <PackageReference Include="StackExchange.Redis" Version="2.2.62" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="5.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DashFire.Dashboard.Framework\DashFire.Dashboard.Framework.csproj">
