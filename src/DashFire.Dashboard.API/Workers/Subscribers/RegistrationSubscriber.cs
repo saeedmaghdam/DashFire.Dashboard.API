@@ -11,6 +11,7 @@ using DashFire.Dashboard.Framework.Options;
 using DashFire.Dashboard.Framework.Services.Job;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -20,6 +21,7 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
     public class RegistrationSubscriber : IHostedService
     {
         private readonly IOptions<ApplicationOptions> _options;
+        private readonly ILogger<RegistrationSubscriber> _logger;
         private readonly IServiceProvider _serviceProvider;
 
         private const string _serviceSideQueueName = "DashFire.Dashboard";
@@ -29,11 +31,12 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
         private readonly IConnection _connection;
         private readonly IModel _channel;
 
-        public RegistrationSubscriber(IOptions<ApplicationOptions> options, IServiceProvider serviceProvider, DashFireCacheManager cacheManager)
+        public RegistrationSubscriber(IOptions<ApplicationOptions> options, ILogger<RegistrationSubscriber> logger, IServiceProvider serviceProvider, DashFireCacheManager cacheManager)
         {
             cacheManager.InitializeAsync(CancellationToken.None).GetAwaiter().GetResult();
 
             _options = options;
+            _logger = logger;
             _serviceProvider = serviceProvider;
 
             var factory = new ConnectionFactory() { Uri = new Uri(_options.Value.RabbitMqOptions.ConnectionString) };
@@ -65,7 +68,20 @@ namespace DashFire.Dashboard.API.Workers.Subscribers
             
             var registrationModel = JsonSerializer.Deserialize<Models.RegistrationModel>(message);
 
-            ProcessMessage(registrationModel);
+            int remainingAttempts = 3;
+            do
+            {
+                try
+                {
+                    ProcessMessage(registrationModel);
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    remainingAttempts--;
+                }
+            } while (remainingAttempts != 0);
         }
 
         private void ProcessMessage(Models.RegistrationModel model)
