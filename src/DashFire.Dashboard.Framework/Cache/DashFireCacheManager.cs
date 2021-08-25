@@ -16,6 +16,7 @@ namespace DashFire.Dashboard.Framework.Cache
 {
     public class DashFireCacheManager
     {
+        private const bool IsCacheEnabled = false;
         private const string CacheKeyJob = "jobs";
         private const string CacheKeyJobDetails = "job_details";
         private const string CacheKeyJobWithDetails = "jobs_with_details";
@@ -41,6 +42,9 @@ namespace DashFire.Dashboard.Framework.Cache
 
         public Task InitializeAsync(CancellationToken cancellationToken)
         {
+            if (!IsCacheEnabled)
+                return Task.CompletedTask;
+
             if (!_isInitialized)
             {
                 lock (_locker)
@@ -65,6 +69,9 @@ namespace DashFire.Dashboard.Framework.Cache
 
         public async Task<IEnumerable<Models.JobCacheModel>> GetJobsAsync(CancellationToken cancellationToken)
         {
+            if (!IsCacheEnabled)
+                return default(IEnumerable<Models.JobCacheModel>);
+
             var cacheResult = await _cache.GetAsync(CacheKeyJob, cancellationToken);
             if (cacheResult == null)
                 return new List<Models.JobCacheModel>();
@@ -76,6 +83,9 @@ namespace DashFire.Dashboard.Framework.Cache
 
         public async Task<Models.JobDetailsCacheModel> GetJobDetailsAsync(string key, string instanceId, CancellationToken cancellationToken)
         {
+            if (!IsCacheEnabled)
+                return default(Models.JobDetailsCacheModel);
+
             var cacheResult = await _cache.GetAsync($"{CacheKeyJobDetails}_{key}_{instanceId}", cancellationToken);
             if (cacheResult == null)
                 return default(Models.JobDetailsCacheModel);
@@ -85,6 +95,9 @@ namespace DashFire.Dashboard.Framework.Cache
 
         public async Task<IEnumerable<Models.JobWithDetailsCacheModel>> GetJobsWithDetailsAsync(CancellationToken cancellationToken)
         {
+            if (!IsCacheEnabled)
+                return default(IEnumerable<Models.JobWithDetailsCacheModel>);
+
             var cacheResult = await _cache.GetAsync(CacheKeyJobWithDetails, cancellationToken);
             if (cacheResult == null)
             {
@@ -131,6 +144,9 @@ namespace DashFire.Dashboard.Framework.Cache
 
         public async Task SetJobAsync(string key, string instanceId, string systemName, string displayName, string description, bool registrationRequired, string parameters, JobExecutionMode jobExecutionMode, string originalInstanceId, CancellationToken cancellationToken)
         {
+            if (!IsCacheEnabled)
+                return;
+
             var cacheResult = await _cache.GetAsync(CacheKeyJob, cancellationToken);
             var jobs = default(IDictionary<string, Models.JobCacheModel>);
             if (cacheResult != null)
@@ -177,6 +193,9 @@ namespace DashFire.Dashboard.Framework.Cache
 
         public async Task SetJobStatusMessageAsync(string key, string instanceId, string message, CancellationToken cancellationToken)
         {
+            if (!IsCacheEnabled)
+                return;
+
             var jobDetails = await GetJobDetailsAsync(key, instanceId, cancellationToken);
             if (jobDetails == null)
                 return;
@@ -189,6 +208,9 @@ namespace DashFire.Dashboard.Framework.Cache
 
         public async Task SetJobStatusAsync(string key, string instanceId, JobStatus jobStatus, CancellationToken cancellationToken)
         {
+            if (!IsCacheEnabled)
+                return;
+
             var jobDetails = await GetJobDetailsAsync(key, instanceId, cancellationToken);
             if (jobDetails == null)
                 return;
@@ -203,6 +225,9 @@ namespace DashFire.Dashboard.Framework.Cache
 
         public async Task SetJobScheduleAsync(string key, string instanceId, DateTime? nextExecutionDateTime, CancellationToken cancellationToken)
         {
+            if (!IsCacheEnabled)
+                return;
+
             var jobDetails = await GetJobDetailsAsync(key, instanceId, cancellationToken);
             if (jobDetails == null)
                 return;
@@ -215,6 +240,9 @@ namespace DashFire.Dashboard.Framework.Cache
 
         public async Task SetJobHeartBitAsync(string key, string instanceId, CancellationToken cancellationToken)
         {
+            if (!IsCacheEnabled)
+                return;
+
             var jobDetails = await GetJobDetailsAsync(key, instanceId, cancellationToken);
             if (jobDetails == null)
                 return;
@@ -227,6 +255,9 @@ namespace DashFire.Dashboard.Framework.Cache
 
         public async Task SetJobOfflineAsync(string key, string instanceId, CancellationToken cancellationToken)
         {
+            if (!IsCacheEnabled)
+                return;
+
             var jobDetails = await GetJobDetailsAsync(key, instanceId, cancellationToken);
             if (jobDetails == null)
                 return;
@@ -239,6 +270,9 @@ namespace DashFire.Dashboard.Framework.Cache
 
         public async Task SetJobOnlineAsync(string key, string instanceId, CancellationToken cancellationToken)
         {
+            if (!IsCacheEnabled)
+                return;
+
             var jobDetails = await GetJobDetailsAsync(key, instanceId, cancellationToken);
             if (jobDetails == null)
                 return;
@@ -251,6 +285,9 @@ namespace DashFire.Dashboard.Framework.Cache
 
         public async Task RemoveAllJobs(CancellationToken cancellationToken)
         {
+            if (!IsCacheEnabled)
+                return;
+
             var jobs = GetJobsAsync(cancellationToken).GetAwaiter().GetResult();
 
             await _cache.RemoveAsync(CacheKeyJob, cancellationToken);
@@ -263,6 +300,9 @@ namespace DashFire.Dashboard.Framework.Cache
 
         public async Task RemoveJobAsync(string key, string instanceId, CancellationToken cancellationToken)
         {
+            if (!IsCacheEnabled)
+                return;
+
             var cacheResult = await _cache.GetAsync(CacheKeyJob, cancellationToken);
             if (cacheResult == null)
                 return;
@@ -281,6 +321,9 @@ namespace DashFire.Dashboard.Framework.Cache
 
         private async Task InitializeCacheAsync(IEnumerable<IJob> jobModels, CancellationToken cancellationToken)
         {
+            if (!IsCacheEnabled)
+                return;
+
             var jobs = new Dictionary<string, Models.JobCacheModel>();
 
             foreach (var jobModel in jobModels)

@@ -20,6 +20,7 @@ namespace DashFire.Dashboard.Service.Job
 {
     public class JobService : IJobService
     {
+        private const bool IsCacheEnabled = false;
         private const string _dashboardSideExchangeName = "DashFire.Service";
 
         private readonly AppDbContext _db;
@@ -80,33 +81,68 @@ namespace DashFire.Dashboard.Service.Job
         public async Task<IEnumerable<ICachedJob>> GetCachedAsync(CancellationToken cancellationToken)
         {
             var result = new List<Models.CachedJobModel>();
-            var jobs = await _cacheManager.GetJobsWithDetailsAsync(cancellationToken);
-            foreach (var job in jobs)
+
+            if (!IsCacheEnabled)
             {
-                result.Add(new Models.CachedJobModel()
+                Func<string, IEnumerable<JobParameterModel>> ExtractParameters = (json) =>
+                {
+                    if (string.IsNullOrEmpty(json))
+                        return null;
+
+                    return JsonSerializer.Deserialize<List<JobParameterModel>>(json);
+                };
+
+                var jobs = await GetServiceModeJobsIncludingAllAliveNotServiceModeJobsAsync(cancellationToken);
+
+                result.AddRange(jobs.Select(job => new CachedJobModel()
                 {
                     Status = job.Status,
                     LastStatusMessage = job.LastStatusMessage,
                     InstanceId = job.InstanceId,
                     IsOnline = job.IsOnline,
                     Key = job.Key,
-                    LastExecutionDateTime = job.LastExecutionDateTime == 0 ? null : new DateTime(job.LastExecutionDateTime),
-                    NextExecutionDateTime = job.NextExecutionDateTime == 0 ? null : new DateTime(job.NextExecutionDateTime),
+                    LastExecutionDateTime = job.LastExecutionDateTime,
+                    NextExecutionDateTime = job.NextExecutionDateTime,
                     SystemName = job.SystemName,
                     Description = job.Description,
                     DisplayName = job.DisplayName,
                     RegistrationRequired = job.RegistrationRequired,
-                    Parameters = job.Parameters.Select(x => new Models.JobParameterModel()
-                    {
-                        Description = x.Description,
-                        DisplayName = x.DisplayName,
-                        ParameterName = x.ParameterName,
-                        TypeFullName = x.TypeFullName
-                    }),
-                    HeartBitDateTime = new DateTime(job.HeartBitDateTimeTicks),
+                    Parameters = ExtractParameters(job.Parameters),
+                    HeartBitDateTime = job.HeartBitDateTime,
                     JobExecutionMode = job.JobExecutionMode,
-                    OriginalInstanceId = job.OriginalInstanceId
-                });
+                    OriginalInstanceId = job.OriginalJob == null ? null : job.OriginalJob.InstanceId
+                }));
+            }
+            else
+            {
+                var jobs = await _cacheManager.GetJobsWithDetailsAsync(cancellationToken);
+                foreach (var job in jobs)
+                {
+                    result.Add(new Models.CachedJobModel()
+                    {
+                        Status = job.Status,
+                        LastStatusMessage = job.LastStatusMessage,
+                        InstanceId = job.InstanceId,
+                        IsOnline = job.IsOnline,
+                        Key = job.Key,
+                        LastExecutionDateTime = job.LastExecutionDateTime == 0 ? null : new DateTime(job.LastExecutionDateTime),
+                        NextExecutionDateTime = job.NextExecutionDateTime == 0 ? null : new DateTime(job.NextExecutionDateTime),
+                        SystemName = job.SystemName,
+                        Description = job.Description,
+                        DisplayName = job.DisplayName,
+                        RegistrationRequired = job.RegistrationRequired,
+                        Parameters = job.Parameters.Select(x => new Models.JobParameterModel()
+                        {
+                            Description = x.Description,
+                            DisplayName = x.DisplayName,
+                            ParameterName = x.ParameterName,
+                            TypeFullName = x.TypeFullName
+                        }),
+                        HeartBitDateTime = new DateTime(job.HeartBitDateTimeTicks),
+                        JobExecutionMode = job.JobExecutionMode,
+                        OriginalInstanceId = job.OriginalInstanceId
+                    });
+                }
             }
 
             return result;
